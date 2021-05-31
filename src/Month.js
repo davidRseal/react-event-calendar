@@ -13,6 +13,7 @@ export default function Month({
   endSelected,
   setEndSelected,
   clickSelection,
+  events,
 }) {
   const [firstDay, setFirstDay] = useState(
     new Date(date.getFullYear(), date.getMonth(), 1)
@@ -65,21 +66,39 @@ export default function Month({
     return new Date(firstDayCopy.setDate(diff));
   }
 
+  function inEventRange(currDate) {
+    let thisDaysEvents = [];
+    events.forEach((event) => {
+      if (event.start <= event.end) {
+        if (currDate >= event.start && currDate <= event.end) {
+          thisDaysEvents.push(event);
+        }
+      } else {
+        if (currDate >= event.end && currDate <= event.start) {
+          thisDaysEvents.push(event);
+        }
+      }
+    });
+    return thisDaysEvents.length ? thisDaysEvents : null;
+  }
+
   function getWeek(weekStart) {
     let days = [];
     for (let i = 0; i < 7; i++) {
+      let currDate = new Date(weekStart.getTime() + i * 24 * 60 * 60 * 1000);
       days.push(
         <td style={{ width: '14.2%', padding: '0px' }}>
           <Day
             viewMonth={firstDay.getMonth()}
             dayHeight={dayHeight}
-            date={new Date(weekStart.getTime() + i * 24 * 60 * 60 * 1000)}
+            date={currDate}
             startSelected={startSelected}
             setStartSelected={setStartSelected}
             endSelected={endSelected}
             setEndSelected={setEndSelected}
             highlighting={highlighting}
             setHighlighting={setHighlighting}
+            events={inEventRange(currDate)}
           />
         </td>
       );

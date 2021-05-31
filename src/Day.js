@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Event from './Event';
 import './App.css';
 
 export default function Day({
@@ -12,6 +13,7 @@ export default function Day({
   setEndSelected,
   highlighting,
   setHighlighting,
+  events,
 }) {
   const [hover, setHover] = useState(false);
   const thisMonth = date.getMonth();
@@ -19,7 +21,6 @@ export default function Day({
     normal: {
       backgroundColor: viewMonth === thisMonth ? 'white' : 'rgb(240,240,240)',
       height: dayHeight,
-      padding: '5px',
       color: 'rgb(100,100,100)',
       userSelect: 'none',
     },
@@ -70,7 +71,9 @@ export default function Day({
         ...(inSelectionRange() ? style.hover : null),
       }}
     >
-      {date.getDate()}
+      <div style={{ padding: '5px' }}>{date.getDate()}</div>
+      {/* {events && <Event event={events[0]} />} */}
+      {events && <Event events={events} />}
     </div>
   );
 }
@@ -85,4 +88,7 @@ Day.propTypes = {
   setEndSelected: PropTypes.func,
   highlighting: PropTypes.bool,
   setHighlighting: PropTypes.func,
+  events: PropTypes.arrayOf(
+    PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
+  ),
 };

@@ -4,6 +4,7 @@ import './App.css';
 
 export default function Day({
   viewMonth,
+  dayHeight,
   date,
   startSelected,
   setStartSelected,
@@ -17,7 +18,7 @@ export default function Day({
   const style = {
     normal: {
       backgroundColor: viewMonth === thisMonth ? 'white' : 'rgb(240,240,240)',
-      height: '100px',
+      height: dayHeight,
       padding: '5px',
       color: 'rgb(100,100,100)',
       userSelect: 'none',
@@ -76,6 +77,7 @@ export default function Day({
 
 Day.propTypes = {
   viewMonth: PropTypes.number,
+  dayHeight: PropTypes.string,
   date: PropTypes.object,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,

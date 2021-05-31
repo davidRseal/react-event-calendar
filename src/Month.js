@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Day from './Day';
 import Header from './Header';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export default function Month({ date }) {
-  // const [viewMonth, setViewMonth] = useState(date.getMonth());
+export default function Month({
+  date,
+  dayHeight,
+  startSelected,
+  setStartSelected,
+  endSelected,
+  setEndSelected,
+  clickSelection,
+}) {
   const [firstDay, setFirstDay] = useState(
     new Date(date.getFullYear(), date.getMonth(), 1)
   );
-  const [startSelected, setStartSelected] = useState(null);
-  const [endSelected, setEndSelected] = useState(null);
+  // const [startSelected, setStartSelected] = useState(null);
+  // const [endSelected, setEndSelected] = useState(null);
   const [highlighting, setHighlighting] = useState(false);
-  // var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  let prevSelection = useRef(null);
+  useEffect(() => {
+    if (clickSelection) {
+      if (prevSelection.current === endSelected) {
+        prevSelection.current = null;
+        return;
+      }
+      if (prevSelection.current !== null) {
+        setEndSelected(startSelected);
+        setStartSelected(prevSelection.current);
+        prevSelection.current = endSelected;
+      } else {
+        prevSelection.current = startSelected;
+      }
+    }
+  }, [startSelected]);
 
   function getHeader() {
     let days = [];
@@ -49,6 +72,7 @@ export default function Month({ date }) {
         <td style={{ width: '14.2%', padding: '0px' }}>
           <Day
             viewMonth={firstDay.getMonth()}
+            dayHeight={dayHeight}
             date={new Date(weekStart.getTime() + i * 24 * 60 * 60 * 1000)}
             startSelected={startSelected}
             setStartSelected={setStartSelected}
@@ -101,8 +125,16 @@ Month.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
+  dayHeight: PropTypes.string,
+  startSelected: PropTypes.object,
+  setStartSelected: PropTypes.func,
+  endSelected: PropTypes.object,
+  setEndSelected: PropTypes.func,
+  clickSelection: PropTypes.bool,
 };
 
 Month.defaultProps = {
   date: new Date(),
+  dayHeight: '100px',
+  clickSelection: false,
 };

@@ -25,12 +25,10 @@ export default function Day({
       userSelect: 'none',
     },
     hover: {
-      backgroundColor: 'rgb(220, 239, 255)',
+      boxShadow: '0 0 0 1px rgb(0, 79, 250)',
     },
     focus: {
       backgroundColor: 'rgb(220, 239, 255)',
-      outline: '2px solid rgb(44, 209, 255)',
-      outlineOffset: '-1px',
     },
   };
 
@@ -68,12 +66,13 @@ export default function Day({
       style={{
         ...style.normal,
         ...(hover ? style.hover : null),
-        ...(inSelectionRange() ? style.hover : null),
+        ...(inSelectionRange() ? style.focus : null),
       }}
     >
       <div style={{ padding: '5px' }}>{date.getDate()}</div>
-      {/* {events && <Event event={events[0]} />} */}
-      {events && <Event events={events} />}
+      {/* {events && date.getTime() === events[0].start.getTime() && (
+        <Event events={events} width={4} />
+      )} */}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Day from './Day';
 import Header from './Header';
+import EventsOverlay from './EventsOverlay';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -109,7 +110,7 @@ export default function Month({
   function getMonth() {
     let weekStart = getSunday();
     let weeks = [];
-    weeks.push(<tr>{getHeader()}</tr>);
+    // weeks.push(<tr>{getHeader()}</tr>);
     for (let i = 0; i < 6; i++) {
       let currDate = new Date(
         weekStart.getTime() + i * 7 * 24 * 60 * 60 * 1000
@@ -131,10 +132,30 @@ export default function Month({
       />
       {/* {events[0].start.toString()} */}
       <table
-        style={{ width: '100%', height: '100%', backgroundColor: 'lightgrey' }}
+        cellSpacing="0"
+        cellPadding="0"
+        style={{
+          width: '100%',
+        }}
       >
-        {getMonth()}
+        <tr>{getHeader()}</tr>
       </table>
+      <div style={{ display: 'grid' }}>
+        <table
+          style={{
+            position: 'absolute',
+            width: '100%',
+            backgroundColor: 'lightgrey',
+            gridColumn: 1,
+            gridRow: 1,
+          }}
+        >
+          {getMonth()}
+        </table>
+        <EventsOverlay dayHeight={dayHeight} />
+      </div>
+
+      {/* <EventsOverlay events={events} dayHeight={dayHeight} /> */}
     </div>
   );
 }

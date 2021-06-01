@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 // import Cell from './Cell';
 import Month from './Month';
 
-const events = [
-  { start: new Date('2021/05/16'), end: new Date('2021/05/20') },
-  { start: new Date('2021/05/19'), end: new Date('2021/05/24') },
-];
+const events = [{ start: new Date('2021/05/17'), end: new Date('2021/05/20') }];
 
 function App() {
   const [startSelected, setStartSelected] = useState(null);

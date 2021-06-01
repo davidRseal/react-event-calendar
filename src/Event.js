@@ -3,32 +3,24 @@ import PropTypes from 'prop-types';
 
 // const COLORS = ['lightblue', 'blue'];
 
-export default function Event({ events }) {
-  function getEvents() {
-    let eventTiles = [];
-    let height = 100 / events.length + '%';
-    for (let i = 0; i < events.length; i++) {
-      //   let color = COLORS[i];
-      eventTiles.push(
-        <div
-          style={{
-            backgroundColor: 'lightblue',
-            borderTop: '1px solid black',
-            borderBottom: '1px solid black',
-            height: height,
-          }}
-        ></div>
-      );
-    }
-
-    return eventTiles;
-  }
-
-  return getEvents();
+export default function Event({ events, width }) {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        display: 'block',
+        width: (100 * width) / 7 + '%',
+        height: '70px',
+        backgroundColor: 'lightblue',
+        zIndex: 2,
+      }}
+    />
+  );
 }
 
 Event.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
+  width: PropTypes.number,
 };

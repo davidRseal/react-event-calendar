@@ -88,7 +88,7 @@ export default function Month({
     for (let i = 0; i < 7; i++) {
       let currDate = new Date(weekStart.getTime() + i * 24 * 60 * 60 * 1000);
       days.push(
-        <td style={{ width: '14.2%', padding: '0px' }}>
+        <td style={{ width: 100 / 7 + '%', padding: '0px' }}>
           <Day
             viewMonth={firstDay.getMonth()}
             dayHeight={dayHeight}
@@ -110,7 +110,6 @@ export default function Month({
   function getMonth() {
     let weekStart = getSunday();
     let weeks = [];
-    // weeks.push(<tr>{getHeader()}</tr>);
     for (let i = 0; i < 6; i++) {
       let currDate = new Date(
         weekStart.getTime() + i * 7 * 24 * 60 * 60 * 1000
@@ -152,7 +151,7 @@ export default function Month({
         >
           {getMonth()}
         </table>
-        <EventsOverlay dayHeight={dayHeight} />
+        <EventsOverlay weekStart={getSunday(firstDay)} dayHeight={dayHeight} />
       </div>
 
       {/* <EventsOverlay events={events} dayHeight={dayHeight} /> */}

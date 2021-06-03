@@ -1,65 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Day from './Day';
-import Header from './Header';
-import EventsOverlay from './EventsOverlay';
 
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DAY = 24 * 60 * 60 * 1000;
 
 export default function Month({
-  date,
+  firstDay,
   dayHeight,
   startSelected,
   setStartSelected,
   endSelected,
   setEndSelected,
-  clickSelection,
   events,
   onEventClick,
+  onSelect,
+  setNumWeeksInView,
 }) {
-  const [firstDay, setFirstDay] = useState(
-    new Date(date.getFullYear(), date.getMonth(), 1)
-  );
   const [highlighting, setHighlighting] = useState(false);
-  let numWeeksInView = 0;
 
-  let prevSelection = useRef(null);
   useEffect(() => {
-    if (clickSelection) {
-      if (prevSelection.current === endSelected) {
-        prevSelection.current = null;
-        return;
-      }
-      if (prevSelection.current !== null) {
-        setEndSelected(startSelected);
-        setStartSelected(prevSelection.current);
-        prevSelection.current = endSelected;
-      } else {
-        prevSelection.current = startSelected;
-      }
+    if (!highlighting && startSelected && endSelected) {
+      onSelect(startSelected, endSelected);
     }
-  }, [startSelected]);
-
-  function getHeader() {
-    let days = [];
-    for (let i = 0; i < 7; i++) {
-      days.push(
-        <td style={{ width: '14.2%', padding: '0px' }}>
-          <div
-            style={{
-              backgroundColor: 'white',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            {WEEKDAYS[i]}
-          </div>
-        </td>
-      );
-    }
-    return days;
-  }
+  }, [startSelected, endSelected]);
 
   function getSunday() {
     let firstDayCopy = new Date(firstDay);
@@ -115,49 +78,25 @@ export default function Month({
       }
       weeks.push(<tr>{getWeek(currDate)}</tr>);
     }
-    numWeeksInView = i;
+    setNumWeeksInView(i);
     return weeks;
   }
 
   return (
-    <div style={{ backgroundColor: 'white' }}>
-      <Header
-        firstDay={firstDay}
-        month={firstDay.getMonth()}
-        setFirstDay={setFirstDay}
-      />
-      <table
-        cellSpacing="0"
-        cellPadding="0"
-        style={{
-          width: '100%',
-        }}
-      >
-        <tr>{getHeader()}</tr>
-      </table>
-      <div style={{ display: 'grid' }}>
-        <table
-          style={{
-            backgroundColor: 'lightgrey',
-            gridColumn: 1,
-            gridRow: 1,
-          }}
-        >
-          {getMonth()}
-        </table>
-        <EventsOverlay
-          weekStart={getSunday(firstDay)}
-          events={events}
-          dayHeight={dayHeight}
-          numWeeksInView={numWeeksInView}
-        />
-      </div>
-    </div>
+    <table
+      style={{
+        backgroundColor: 'lightgrey',
+        gridColumn: 1,
+        gridRow: 1,
+      }}
+    >
+      {getMonth()}
+    </table>
   );
 }
 
 Month.propTypes = {
-  date: PropTypes.object,
+  firstDay: PropTypes.object,
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
@@ -168,6 +107,8 @@ Month.propTypes = {
   setEndSelected: PropTypes.func,
   clickSelection: PropTypes.bool,
   onEventClick: PropTypes.func,
+  onSelect: PropTypes.func,
+  setNumWeeksInView: PropTypes.func,
 };
 
 Month.defaultProps = {

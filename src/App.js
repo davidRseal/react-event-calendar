@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Month from './Month';
+import React, { useRef } from 'react';
+import Calendar from './Calendar';
 
 // Events must have start < end and they can't overlap
 const EVENTS = [
@@ -9,20 +9,27 @@ const EVENTS = [
 ];
 
 function App() {
-  const [startSelected, setStartSelected] = useState(null);
-  const [endSelected, setEndSelected] = useState(null);
+  let prevSelection = useRef(null);
+  function handleSelect(start, end) {
+    if (start.getTime() === end.getTime() && prevSelection.current === null) {
+      prevSelection.current = start;
+    } else if (start.getTime() === end.getTime()) {
+      console.log('click selection');
+      console.log(prevSelection.current, end);
+      prevSelection.current = null;
+    } else {
+      console.log('drag selection');
+      console.log(start, end);
+    }
+  }
 
   return (
     <div style={{ backgroundColor: 'purple', padding: '50px' }}>
-      <Month
+      <Calendar
         events={EVENTS}
-        startSelected={startSelected}
-        setStartSelected={setStartSelected}
-        endSelected={endSelected}
-        setEndSelected={setEndSelected}
-        clickSelection={false}
         dayHeight={'100px'}
         onEventClick={(event) => {}}
+        onSelect={(start, end) => handleSelect(start, end)}
       />
     </div>
   );

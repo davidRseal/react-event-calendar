@@ -81,7 +81,7 @@ Day.propTypes = {
   date: PropTypes.object,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,
-  endSelected: PropTypes.bool,
+  endSelected: PropTypes.object,
   setEndSelected: PropTypes.func,
   highlighting: PropTypes.bool,
   setHighlighting: PropTypes.func,

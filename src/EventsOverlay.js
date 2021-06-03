@@ -62,27 +62,46 @@ export default function EventsOverlay({
   function getWeek(currWeekStart) {
     let weekLayout = partitionWeek(currWeekStart);
     let columns = [];
-    weekLayout.forEach((col) => {
+    weekLayout.forEach((col, index) => {
       columns.push(
-        <td style={colStyle(col.numDays, col.hasEvent)}>{event()}</td>
+        <td
+          key={'week-column-' + index}
+          style={colStyle(col.numDays, col.hasEvent)}
+        >
+          {event()}
+        </td>
       );
     });
-    return (
-      <table
-        cellSpacing="1"
-        cellPadding="0"
-        style={{ width: '100%', paddingTop: '0px' }}
-      >
-        <tr>{columns}</tr>
-      </table>
-    );
+    return columns;
+    // return (
+    //   <table
+    //     cellSpacing="1"
+    //     cellPadding="0"
+    //     style={{ width: '100%', paddingTop: '0px' }}
+    //   >
+    //     <tbody>
+    //       <tr>{columns}</tr>
+    //     </tbody>
+    //   </table>
+    // );
   }
 
   function getEventOverlay() {
     let weeks = [];
     for (let i = 0; i < numWeeksInView; i++) {
       let currWeekStart = new Date(weekStart.getTime() + i * 7 * DAY);
-      weeks.push(getWeek(currWeekStart));
+      weeks.push(
+        <table
+          cellSpacing="1"
+          cellPadding="0"
+          style={{ width: '100%', paddingTop: '0px' }}
+          key={'event-week-' + i}
+        >
+          <tbody>
+            <tr>{getWeek(currWeekStart)}</tr>
+          </tbody>
+        </table>
+      );
     }
     return weeks;
   }

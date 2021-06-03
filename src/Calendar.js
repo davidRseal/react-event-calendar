@@ -41,7 +41,7 @@ export default function Calendar({
     let days = [];
     for (let i = 0; i < 7; i++) {
       days.push(
-        <td style={{ width: '14.2%', padding: '0px' }}>
+        <td key={'week-header-' + i} style={{ width: '14.2%', padding: '0px' }}>
           <div
             style={{
               backgroundColor: 'white',
@@ -78,7 +78,9 @@ export default function Calendar({
           width: '100%',
         }}
       >
-        <tr>{getHeader()}</tr>
+        <tbody>
+          <tr>{getHeader()}</tr>
+        </tbody>
       </table>
       <div style={{ display: 'grid' }}>
         <Month

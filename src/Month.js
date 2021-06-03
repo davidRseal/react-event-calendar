@@ -17,12 +17,18 @@ export default function Month({
   setNumWeeksInView,
 }) {
   const [highlighting, setHighlighting] = useState(false);
+  let numWeeksInView = 0;
 
   useEffect(() => {
     if (!highlighting && startSelected && endSelected) {
       onSelect(startSelected, endSelected);
     }
   }, [startSelected, endSelected]);
+
+  useEffect(() => {
+    //just to avoid updating Calendar's state while this component renders
+    setNumWeeksInView(numWeeksInView);
+  }, []);
 
   function getSunday() {
     let firstDayCopy = new Date(firstDay);
@@ -47,7 +53,10 @@ export default function Month({
     for (let i = 0; i < 7; i++) {
       let currDate = new Date(weekStart.getTime() + i * DAY);
       days.push(
-        <td style={{ width: 100 / 7 + '%', padding: '0px' }}>
+        <td
+          key={'week-column-' + i}
+          style={{ width: 100 / 7 + '%', padding: '0px' }}
+        >
           <Day
             viewMonth={firstDay.getMonth()}
             dayHeight={dayHeight}
@@ -76,9 +85,9 @@ export default function Month({
       if (i > 4 && currDate.getMonth() !== firstDay.getMonth()) {
         break;
       }
-      weeks.push(<tr>{getWeek(currDate)}</tr>);
+      weeks.push(<tr key={'month-row-' + i}>{getWeek(currDate)}</tr>);
     }
-    setNumWeeksInView(i);
+    numWeeksInView = i;
     return weeks;
   }
 
@@ -90,7 +99,7 @@ export default function Month({
         gridRow: 1,
       }}
     >
-      {getMonth()}
+      <tbody>{getMonth()}</tbody>
     </table>
   );
 }

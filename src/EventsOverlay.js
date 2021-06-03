@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const EVENTS = [
-  { start: new Date('2021/05/31'), end: new Date('2021/06/01') },
-  { start: new Date('2021/06/03'), end: new Date('2021/06/04') },
-];
 const DAY = 24 * 60 * 60 * 1000;
 
-export default function EventsOverlay({ weekStart, events, dayHeight }) {
+export default function EventsOverlay({
+  weekStart,
+  events,
+  dayHeight,
+  numWeeksInView,
+}) {
   function colStyle(numDays, hasEvent) {
     return {
       width: (100 * numDays) / 7 + '%',
@@ -20,15 +21,23 @@ export default function EventsOverlay({ weekStart, events, dayHeight }) {
     return <div style={{ height: dayHeight }} />;
   }
 
-  function partitionWeek() {
-    let nextWeekStart = new Date(weekStart.getTime() + 7 * DAY);
+  function partitionWeek(currWeekStart) {
+    let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
     let dayCount = 0;
     let layout = [];
-    let thisWeeksEvents = EVENTS.filter(
-      (event) => weekStart <= event.end && nextWeekStart > event.start
-    ).sort((a, b) => a.start < b.start);
+    let thisWeeksEvents = events
+      .filter(
+        (event) => currWeekStart <= event.end && nextWeekStart > event.start
+      )
+      .sort((a, b) => a.start - b.start);
     while (dayCount < 7) {
-      let currDay = new Date(weekStart.getTime() + dayCount * DAY);
+      if (thisWeeksEvents.length === 0) {
+        let numDays = 7 - dayCount;
+        layout.push({ numDays: numDays, hasEvent: false });
+        dayCount = 7;
+        break;
+      }
+      let currDay = new Date(currWeekStart.getTime() + dayCount * DAY);
       let currEvent = thisWeeksEvents.splice(0, 1)[0];
       if (currDay.getTime() >= currEvent.start.getTime()) {
         let numDays = 1 + (currEvent.end.getTime() - currDay.getTime()) / DAY;
@@ -46,17 +55,12 @@ export default function EventsOverlay({ weekStart, events, dayHeight }) {
         dayCount += numDays;
         layout.push({ numDays: numDays, hasEvent: true });
       }
-      if (thisWeeksEvents.length === 0) {
-        let numDays = 7 - dayCount;
-        layout.push({ numDays: numDays, hasEvent: false });
-        dayCount = 7;
-      }
     }
     return layout;
   }
 
-  function getWeek() {
-    let weekLayout = partitionWeek();
+  function getWeek(currWeekStart) {
+    let weekLayout = partitionWeek(currWeekStart);
     let columns = [];
     weekLayout.forEach((col) => {
       columns.push(
@@ -74,56 +78,24 @@ export default function EventsOverlay({ weekStart, events, dayHeight }) {
     );
   }
 
+  function getEventOverlay() {
+    let weeks = [];
+    for (let i = 0; i < numWeeksInView; i++) {
+      let currWeekStart = new Date(weekStart.getTime() + i * 7 * DAY);
+      weeks.push(getWeek(currWeekStart));
+    }
+    return weeks;
+  }
+
   return (
     <div
       style={{
-        position: 'absolute',
-        width: '100%',
         gridColumn: 1,
         gridRow: 1,
+        pointerEvents: 'none',
       }}
     >
-      {getWeek()}
-      {/* <table
-        cellSpacing="1"
-        cellPadding="0"
-        style={{ width: '100%', paddingTop: '0px' }}
-      >
-        <tr>
-          <td style={colStyle(2, true)}>{event()}</td>
-          <td style={colStyle(5, true)}>{event()}</td>
-        </tr>
-      </table>
-      <table
-        cellSpacing="1"
-        cellPadding="0"
-        style={{ width: '100%', paddingTop: '0px' }}
-      >
-        <tr>
-          <td style={colStyle(5, true)}>{event()}</td>
-          <td style={colStyle(2, true)}>{event()}</td>
-        </tr>
-      </table>
-      <table
-        cellSpacing="1"
-        cellPadding="0"
-        style={{ width: '100%', paddingTop: '0px' }}
-      >
-        <tr>
-          <td style={colStyle(5)}>{event()}</td>
-          <td style={colStyle(2, true)}>{event()}</td>
-        </tr>
-      </table>
-      <table
-        cellSpacing="1"
-        cellPadding="0"
-        style={{ width: '100%', paddingTop: '0px' }}
-      >
-        <tr>
-          <td style={colStyle(2)}>{event()}</td>
-          <td style={colStyle(5, true)}>{event()}</td>
-        </tr>
-      </table> */}
+      {getEventOverlay()}
     </div>
   );
 }
@@ -134,4 +106,5 @@ EventsOverlay.propTypes = {
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
   dayHeight: PropTypes.string,
+  numWeeksInView: PropTypes.number,
 };

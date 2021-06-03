@@ -5,6 +5,7 @@ import Header from './Header';
 import EventsOverlay from './EventsOverlay';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY = 24 * 60 * 60 * 1000;
 
 export default function Month({
   date,
@@ -15,13 +16,13 @@ export default function Month({
   setEndSelected,
   clickSelection,
   events,
+  onEventClick,
 }) {
   const [firstDay, setFirstDay] = useState(
     new Date(date.getFullYear(), date.getMonth(), 1)
   );
-  // const [startSelected, setStartSelected] = useState(null);
-  // const [endSelected, setEndSelected] = useState(null);
   const [highlighting, setHighlighting] = useState(false);
+  let numWeeksInView = 0;
 
   let prevSelection = useRef(null);
   useEffect(() => {
@@ -68,25 +69,20 @@ export default function Month({
   }
 
   function inEventRange(currDate) {
-    let thisDaysEvents = [];
+    let todaysEvent = null;
     events.forEach((event) => {
-      if (event.start <= event.end) {
-        if (currDate >= event.start && currDate <= event.end) {
-          thisDaysEvents.push(event);
-        }
-      } else {
-        if (currDate >= event.end && currDate <= event.start) {
-          thisDaysEvents.push(event);
-        }
+      if (currDate >= event.start && currDate <= event.end) {
+        todaysEvent = event;
+        return;
       }
     });
-    return thisDaysEvents.length ? thisDaysEvents : null;
+    return todaysEvent;
   }
 
   function getWeek(weekStart) {
     let days = [];
     for (let i = 0; i < 7; i++) {
-      let currDate = new Date(weekStart.getTime() + i * 24 * 60 * 60 * 1000);
+      let currDate = new Date(weekStart.getTime() + i * DAY);
       days.push(
         <td style={{ width: 100 / 7 + '%', padding: '0px' }}>
           <Day
@@ -99,7 +95,8 @@ export default function Month({
             setEndSelected={setEndSelected}
             highlighting={highlighting}
             setHighlighting={setHighlighting}
-            events={inEventRange(currDate)}
+            event={inEventRange(currDate)}
+            onEventClick={onEventClick}
           />
         </td>
       );
@@ -110,15 +107,15 @@ export default function Month({
   function getMonth() {
     let weekStart = getSunday();
     let weeks = [];
-    for (let i = 0; i < 6; i++) {
-      let currDate = new Date(
-        weekStart.getTime() + i * 7 * 24 * 60 * 60 * 1000
-      );
+    let i = 0;
+    for (; i < 6; i++) {
+      let currDate = new Date(weekStart.getTime() + i * 7 * DAY);
       if (i > 4 && currDate.getMonth() !== firstDay.getMonth()) {
         break;
       }
       weeks.push(<tr>{getWeek(currDate)}</tr>);
     }
+    numWeeksInView = i;
     return weeks;
   }
 
@@ -129,7 +126,6 @@ export default function Month({
         month={firstDay.getMonth()}
         setFirstDay={setFirstDay}
       />
-      {/* {events[0].start.toString()} */}
       <table
         cellSpacing="0"
         cellPadding="0"
@@ -142,8 +138,6 @@ export default function Month({
       <div style={{ display: 'grid' }}>
         <table
           style={{
-            position: 'absolute',
-            width: '100%',
             backgroundColor: 'lightgrey',
             gridColumn: 1,
             gridRow: 1,
@@ -151,10 +145,13 @@ export default function Month({
         >
           {getMonth()}
         </table>
-        <EventsOverlay weekStart={getSunday(firstDay)} dayHeight={dayHeight} />
+        <EventsOverlay
+          weekStart={getSunday(firstDay)}
+          events={events}
+          dayHeight={dayHeight}
+          numWeeksInView={numWeeksInView}
+        />
       </div>
-
-      {/* <EventsOverlay events={events} dayHeight={dayHeight} /> */}
     </div>
   );
 }
@@ -170,6 +167,7 @@ Month.propTypes = {
   endSelected: PropTypes.object,
   setEndSelected: PropTypes.func,
   clickSelection: PropTypes.bool,
+  onEventClick: PropTypes.func,
 };
 
 Month.defaultProps = {

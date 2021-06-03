@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Event from './Event';
 import './App.css';
 
 export default function Day({
@@ -13,7 +12,8 @@ export default function Day({
   setEndSelected,
   highlighting,
   setHighlighting,
-  events,
+  event,
+  onEventClick,
 }) {
   const [hover, setHover] = useState(false);
   const thisMonth = date.getMonth();
@@ -45,6 +45,7 @@ export default function Day({
 
   return (
     <div
+      onClick={() => onEventClick(event)}
       onMouseDown={() => {
         setHighlighting(true);
         setStartSelected(date);
@@ -70,9 +71,6 @@ export default function Day({
       }}
     >
       <div style={{ padding: '5px' }}>{date.getDate()}</div>
-      {/* {events && date.getTime() === events[0].start.getTime() && (
-        <Event events={events} width={4} />
-      )} */}
     </div>
   );
 }
@@ -87,7 +85,6 @@ Day.propTypes = {
   setEndSelected: PropTypes.func,
   highlighting: PropTypes.bool,
   setHighlighting: PropTypes.func,
-  events: PropTypes.arrayOf(
-    PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
-  ),
+  event: PropTypes.shape({ start: PropTypes.object, end: PropTypes.object }),
+  onEventClick: PropTypes.func,
 };

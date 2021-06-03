@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
 
 const MONTHS = [
   'January',
@@ -17,10 +18,9 @@ const MONTHS = [
 ];
 
 const buttonStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: '75px',
+  cursor: 'pointer',
+  marginTop: 'auto',
+  marginBottom: 'auto',
 };
 
 export default function Header({ firstDay, setFirstDay }) {
@@ -31,33 +31,25 @@ export default function Header({ firstDay, setFirstDay }) {
         justifyContent: 'center',
       }}
     >
-      <div style={{ padding: '10px' }}>
-        <button
-          style={buttonStyle}
-          onClick={() =>
-            setFirstDay(
-              new Date(firstDay.getFullYear(), firstDay.getMonth() - 1, 1)
-            )
-          }
-        >
-          Previous
-        </button>
-      </div>
-      <div style={{ fontSize: '30px' }}>
+      <BsChevronLeft
+        style={buttonStyle}
+        onClick={() =>
+          setFirstDay(
+            new Date(firstDay.getFullYear(), firstDay.getMonth() - 1, 1)
+          )
+        }
+      />
+      <div style={{ fontSize: '30px', minWidth: '300px', textAlign: 'center' }}>
         {`${MONTHS[firstDay.getMonth()]} ${firstDay.getFullYear()}`}
       </div>
-      <div style={{ padding: '10px' }}>
-        <button
-          style={buttonStyle}
-          onClick={() =>
-            setFirstDay(
-              new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1)
-            )
-          }
-        >
-          Next
-        </button>
-      </div>
+      <BsChevronRight
+        style={buttonStyle}
+        onClick={() =>
+          setFirstDay(
+            new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1)
+          )
+        }
+      />
     </div>
   );
 }

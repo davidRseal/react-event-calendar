@@ -13,7 +13,7 @@ export default function EventsOverlay({
     return {
       width: (100 * numDays) / 7 + '%',
       padding: '0px',
-      backgroundColor: hasEvent ? 'rgba(0,200,200,0.25)' : undefined,
+      backgroundColor: hasEvent ? 'rgba(0,200,200,0.15)' : undefined,
     };
   }
 

@@ -17,16 +17,17 @@ const MONTHS = [
   'December',
 ];
 
-const buttonStyle = {
-  cursor: 'pointer',
-  width: '50px',
-  textAlign: 'center',
-  fontSize: '30px',
-  marginTop: 'auto',
-  marginBottom: 'auto',
-};
+export default function Header({ firstDay, setFirstDay, calendarStyle }) {
+  const buttonStyle = {
+    cursor: 'pointer',
+    width: '50px',
+    textAlign: 'center',
+    fontSize: '30px',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    color: calendarStyle.textColor,
+  };
 
-export default function Header({ firstDay, setFirstDay }) {
   return (
     <div
       style={{
@@ -47,6 +48,7 @@ export default function Header({ firstDay, setFirstDay }) {
           fontSize: '30px',
           minWidth: '300px',
           textAlign: 'center',
+          color: calendarStyle.textColor,
           userSelect: 'none',
         }}
       >
@@ -68,4 +70,7 @@ Header.propTypes = {
   firstDay: PropTypes.object,
   month: PropTypes.number,
   setFirstDay: PropTypes.func,
+  calendarStyle: PropTypes.shape({
+    textColor: PropTypes.string,
+  }),
 };

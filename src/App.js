@@ -9,6 +9,7 @@ import Calendar from './Calendar';
 
 function App() {
   const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   //"user" code
   let prevSelection = useRef(null);
@@ -30,17 +31,52 @@ function App() {
   //"user" code
   function handleEventClick(event) {
     console.log('Event clicked');
-    console.log(event);
+    // console.log(event);
+    setSelectedEvent(event);
+  }
+
+  function deleteEvent(event) {
+    if (event === null) {
+      return;
+    }
+    for (let i = 0; i < events.length; i++) {
+      if (events[i].start === event.start && events[i].end === event.end) {
+        let reducedEvents = [...events];
+        reducedEvents.splice(i, 1);
+        setEvents([...reducedEvents]);
+      }
+    }
   }
 
   return (
     <div style={{ backgroundColor: 'rgb(244 244 244)', padding: '50px' }}>
+      <button onClick={() => setEvents([])}>Delete All Events</button>
+      <button onClick={() => deleteEvent(selectedEvent)}>
+        Delete Selected Event
+      </button>
+      {/* Calendar that creates events after every range selection */}
       <Calendar
         events={events}
         dayHeight={'100px'}
         onEventClick={(event) => handleEventClick(event)}
         onSelect={(start, end) => handleSelect(start, end)}
+        calendarStyle={{
+          backgroundColor: 'white',
+          secondaryColor: 'lightgrey',
+          textColor: 'black',
+          overlapColor: 'rgb(240,240,240)',
+          hoverColor: 'rgb(0, 79, 250)',
+          selectColor: 'rgb(220, 239, 255)',
+          eventColor: 'rgb(33,150,243)',
+        }}
       />
+      {/* Calendar that doesn't do anything
+      <Calendar
+        calendarStyle={{
+          hoverColor: 'none',
+          selectColor: 'none',
+        }}
+      /> */}
     </div>
   );
 }

@@ -12,6 +12,7 @@ export default function Calendar({
   events,
   onEventClick,
   onSelect,
+  calendarStyle,
 }) {
   const [firstDay, setFirstDay] = useState(
     new Date(date.getFullYear(), date.getMonth(), 1)
@@ -19,6 +20,17 @@ export default function Calendar({
   const [startSelected, setStartSelected] = useState(null);
   const [endSelected, setEndSelected] = useState(null);
   const [numWeeksInView, setNumWeeksInView] = useState(0);
+
+  const defaultCalendarStyle = {
+    backgroundColor: 'white',
+    secondaryColor: 'lightgrey',
+    textColor: 'black',
+    overlapColor: 'rgb(240,240,240)',
+    hoverColor: 'rgb(0, 79, 250)',
+    selectColor: 'rgb(220, 239, 255)',
+    eventColor: 'rgb(33,150,243)',
+    ...calendarStyle,
+  };
 
   //   let prevSelection = useRef(null);
   //   useEffect(() => {
@@ -44,7 +56,8 @@ export default function Calendar({
         <td key={'week-header-' + i} style={{ width: '14.2%', padding: '0px' }}>
           <div
             style={{
-              backgroundColor: 'white',
+              backgroundColor: defaultCalendarStyle.backgroundColor,
+              color: defaultCalendarStyle.textColor,
               display: 'flex',
               justifyContent: 'center',
               userSelect: 'none',
@@ -78,11 +91,12 @@ export default function Calendar({
   }
 
   return (
-    <div style={{ backgroundColor: 'white' }}>
+    <div style={{ backgroundColor: defaultCalendarStyle.backgroundColor }}>
       <Header
         firstDay={firstDay}
         month={firstDay.getMonth()}
         setFirstDay={setFirstDay}
+        calendarStyle={defaultCalendarStyle}
       />
       <table
         cellSpacing="0"
@@ -106,6 +120,7 @@ export default function Calendar({
           dayHeight={dayHeight}
           onSelect={onSelect}
           setNumWeeksInView={setNumWeeksInView}
+          calendarStyle={defaultCalendarStyle}
         />
         <EventsOverlay
           weekStart={getSunday(firstDay)}
@@ -113,6 +128,7 @@ export default function Calendar({
           dayHeight={dayHeight}
           numWeeksInView={numWeeksInView}
           onEventClick={onEventClick}
+          calendarStyle={defaultCalendarStyle}
         />
       </div>
     </div>
@@ -127,10 +143,21 @@ Calendar.propTypes = {
   dayHeight: PropTypes.string,
   onEventClick: PropTypes.func,
   onSelect: PropTypes.func,
+  calendarStyle: PropTypes.shape({
+    backgroundColor: PropTypes.string,
+    secondaryColor: PropTypes.string,
+    textColor: PropTypes.string,
+    overlapColor: PropTypes.string,
+    hoverColor: PropTypes.string,
+    selectColor: PropTypes.string,
+    eventColor: PropTypes.string,
+  }),
 };
 
 Calendar.defaultProps = {
   date: new Date(),
   dayHeight: '100px',
-  clickSelection: false,
+  events: [],
+  onEventClick: () => {},
+  onSelect: () => {},
 };

@@ -9,6 +9,7 @@ export default function EventsOverlay({
   dayHeight,
   numWeeksInView,
   onEventClick,
+  calendarStyle,
 }) {
   function event(col, index) {
     return (
@@ -25,7 +26,7 @@ export default function EventsOverlay({
           onClick={col.event ? () => onEventClick(col.event) : undefined}
           style={{
             pointerEvents: col.event ? 'all' : 'none',
-            backgroundColor: col.event ? 'rgb(33,150,243)' : undefined,
+            backgroundColor: col.event ? calendarStyle.eventColor : undefined,
             height: '50%',
           }}
         />
@@ -121,4 +122,7 @@ EventsOverlay.propTypes = {
   dayHeight: PropTypes.string,
   numWeeksInView: PropTypes.number,
   onEventClick: PropTypes.func,
+  calendarStyle: PropTypes.shape({
+    eventColor: PropTypes.string,
+  }),
 };

@@ -12,20 +12,24 @@ export default function Day({
   setEndSelected,
   highlighting,
   setHighlighting,
+  calendarStyle,
 }) {
   const [hover, setHover] = useState(false);
   const thisMonth = date.getMonth();
   const style = {
     normal: {
-      backgroundColor: viewMonth === thisMonth ? 'white' : 'rgb(240,240,240)',
+      backgroundColor:
+        viewMonth === thisMonth
+          ? calendarStyle.backgroundColor
+          : calendarStyle.overlapColor,
       height: dayHeight,
       userSelect: 'none',
     },
     hover: {
-      boxShadow: '0 0 0 1px rgb(0, 79, 250)',
+      boxShadow: '0 0 0 1px ' + calendarStyle.hoverColor,
     },
     focus: {
-      backgroundColor: 'rgb(220, 239, 255)',
+      backgroundColor: calendarStyle.selectColor,
     },
   };
 
@@ -66,7 +70,9 @@ export default function Day({
         ...(inSelectionRange() ? style.focus : null),
       }}
     >
-      <div style={{ padding: '5px' }}>{date.getDate()}</div>
+      <div style={{ padding: '5px', color: calendarStyle.textColor }}>
+        {date.getDate()}
+      </div>
     </div>
   );
 }
@@ -81,4 +87,11 @@ Day.propTypes = {
   setEndSelected: PropTypes.func,
   highlighting: PropTypes.bool,
   setHighlighting: PropTypes.func,
+  calendarStyle: PropTypes.shape({
+    backgroundColor: PropTypes.string,
+    textColor: PropTypes.string,
+    overlapColor: PropTypes.string,
+    hoverColor: PropTypes.string,
+    selectColor: PropTypes.string,
+  }),
 };

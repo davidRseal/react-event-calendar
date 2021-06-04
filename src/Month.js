@@ -13,6 +13,7 @@ export default function Month({
   setEndSelected,
   onSelect,
   setNumWeeksInView,
+  calendarStyle,
 }) {
   const [highlighting, setHighlighting] = useState(false);
   let numWeeksInView = 0;
@@ -54,6 +55,7 @@ export default function Month({
             setEndSelected={setEndSelected}
             highlighting={highlighting}
             setHighlighting={setHighlighting}
+            calendarStyle={calendarStyle}
           />
         </td>
       );
@@ -79,7 +81,7 @@ export default function Month({
   return (
     <table
       style={{
-        backgroundColor: 'lightgrey',
+        backgroundColor: calendarStyle.secondaryColor,
         gridColumn: 1,
         gridRow: 1,
       }}
@@ -99,6 +101,14 @@ Month.propTypes = {
   clickSelection: PropTypes.bool,
   onSelect: PropTypes.func,
   setNumWeeksInView: PropTypes.func,
+  calendarStyle: PropTypes.shape({
+    backgroundColor: PropTypes.string,
+    secondaryColor: PropTypes.string,
+    textColor: PropTypes.string,
+    overlapColor: PropTypes.string,
+    hoverColor: PropTypes.string,
+    selectColor: PropTypes.string,
+  }),
 };
 
 Month.defaultProps = {

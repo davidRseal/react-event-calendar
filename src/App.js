@@ -34,7 +34,7 @@ function App() {
   }
 
   return (
-    <div style={{ padding: '50px' }}>
+    <div style={{ backgroundColor: 'rgb(244 244 244)', padding: '50px' }}>
       <Calendar
         events={events}
         dayHeight={'100px'}

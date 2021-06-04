@@ -19,7 +19,6 @@ export default function Day({
     normal: {
       backgroundColor: viewMonth === thisMonth ? 'white' : 'rgb(240,240,240)',
       height: dayHeight,
-      color: 'rgb(100,100,100)',
       userSelect: 'none',
     },
     hover: {

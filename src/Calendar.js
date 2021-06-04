@@ -47,6 +47,7 @@ export default function Calendar({
               backgroundColor: 'white',
               display: 'flex',
               justifyContent: 'center',
+              userSelect: 'none',
             }}
           >
             {WEEKDAYS[i]}

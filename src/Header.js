@@ -19,6 +19,9 @@ const MONTHS = [
 
 const buttonStyle = {
   cursor: 'pointer',
+  width: '50px',
+  textAlign: 'center',
+  fontSize: '30px',
   marginTop: 'auto',
   marginBottom: 'auto',
 };
@@ -39,7 +42,14 @@ export default function Header({ firstDay, setFirstDay }) {
           )
         }
       />
-      <div style={{ fontSize: '30px', minWidth: '300px', textAlign: 'center' }}>
+      <div
+        style={{
+          fontSize: '30px',
+          minWidth: '300px',
+          textAlign: 'center',
+          userSelect: 'none',
+        }}
+      >
         {`${MONTHS[firstDay.getMonth()]} ${firstDay.getFullYear()}`}
       </div>
       <BsChevronRight

@@ -12,8 +12,6 @@ export default function Day({
   setEndSelected,
   highlighting,
   setHighlighting,
-  event,
-  onEventClick,
 }) {
   const [hover, setHover] = useState(false);
   const thisMonth = date.getMonth();
@@ -45,7 +43,6 @@ export default function Day({
 
   return (
     <div
-      onClick={() => onEventClick(event)}
       onMouseDown={() => {
         setHighlighting(true);
         setStartSelected(date);
@@ -85,6 +82,4 @@ Day.propTypes = {
   setEndSelected: PropTypes.func,
   highlighting: PropTypes.bool,
   setHighlighting: PropTypes.func,
-  event: PropTypes.shape({ start: PropTypes.object, end: PropTypes.object }),
-  onEventClick: PropTypes.func,
 };

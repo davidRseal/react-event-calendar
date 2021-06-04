@@ -8,17 +8,29 @@ export default function EventsOverlay({
   events,
   dayHeight,
   numWeeksInView,
+  onEventClick,
 }) {
-  function colStyle(numDays, hasEvent) {
-    return {
-      width: (100 * numDays) / 7 + '%',
-      padding: '0px',
-      backgroundColor: hasEvent ? 'rgba(0,200,200,0.15)' : undefined,
-    };
-  }
-
-  function event() {
-    return <div style={{ height: dayHeight }} />;
+  function event(col, index) {
+    return (
+      <td
+        key={'week-column-' + index}
+        style={{
+          width: (100 * col.numDays) / 7 + '%',
+          padding: '0px',
+          height: dayHeight,
+        }}
+      >
+        <div style={{ height: '50%' }} />
+        <div
+          onClick={col.event ? () => onEventClick(col.event) : undefined}
+          style={{
+            pointerEvents: col.event ? 'all' : 'none',
+            backgroundColor: col.event ? 'rgb(33,150,243)' : undefined,
+            height: '50%',
+          }}
+        />
+      </td>
+    );
   }
 
   function partitionWeek(currWeekStart) {
@@ -33,7 +45,7 @@ export default function EventsOverlay({
     while (dayCount < 7) {
       if (thisWeeksEvents.length === 0) {
         let numDays = 7 - dayCount;
-        layout.push({ numDays: numDays, hasEvent: false });
+        layout.push({ numDays: numDays });
         dayCount = 7;
         break;
       }
@@ -43,17 +55,17 @@ export default function EventsOverlay({
         let numDays = 1 + (currEvent.end.getTime() - currDay.getTime()) / DAY;
         numDays = numDays > 7 - dayCount ? 7 - dayCount : numDays;
         dayCount += numDays;
-        layout.push({ numDays: numDays, hasEvent: true });
+        layout.push({ numDays: numDays, event: currEvent });
       } else {
         let numDays = (currEvent.start.getTime() - currDay.getTime()) / DAY;
         numDays = numDays > 7 - dayCount ? 7 - dayCount : numDays;
         dayCount += numDays;
-        layout.push({ numDays: numDays, hasEvent: false });
+        layout.push({ numDays: numDays });
         numDays =
           1 + (currEvent.end.getTime() - currEvent.start.getTime()) / DAY;
         numDays = numDays > 7 - dayCount ? 7 - dayCount : numDays;
         dayCount += numDays;
-        layout.push({ numDays: numDays, hasEvent: true });
+        layout.push({ numDays: numDays, event: currEvent });
       }
     }
     return layout;
@@ -63,27 +75,9 @@ export default function EventsOverlay({
     let weekLayout = partitionWeek(currWeekStart);
     let columns = [];
     weekLayout.forEach((col, index) => {
-      columns.push(
-        <td
-          key={'week-column-' + index}
-          style={colStyle(col.numDays, col.hasEvent)}
-        >
-          {event()}
-        </td>
-      );
+      columns.push(event(col, index));
     });
     return columns;
-    // return (
-    //   <table
-    //     cellSpacing="1"
-    //     cellPadding="0"
-    //     style={{ width: '100%', paddingTop: '0px' }}
-    //   >
-    //     <tbody>
-    //       <tr>{columns}</tr>
-    //     </tbody>
-    //   </table>
-    // );
   }
 
   function getEventOverlay() {
@@ -126,4 +120,5 @@ EventsOverlay.propTypes = {
   ),
   dayHeight: PropTypes.string,
   numWeeksInView: PropTypes.number,
+  onEventClick: PropTypes.func,
 };

@@ -64,6 +64,18 @@ export default function Calendar({
     return new Date(firstDayCopy.setDate(diff));
   }
 
+  function cleanEvents(events) {
+    for (let i = 0; i < events.length; i++) {
+      let event = events[i];
+      if (event.start > event.end) {
+        let temp = event.end;
+        event.end = event.start;
+        event.start = temp;
+      }
+    }
+    return events;
+  }
+
   return (
     <div style={{ backgroundColor: 'white' }}>
       <Header
@@ -85,22 +97,21 @@ export default function Calendar({
       <div style={{ display: 'grid' }}>
         <Month
           firstDay={firstDay}
-          events={events}
           startSelected={startSelected}
           setStartSelected={setStartSelected}
           endSelected={endSelected}
           setEndSelected={setEndSelected}
           clickSelection={false}
           dayHeight={dayHeight}
-          onEventClick={onEventClick}
           onSelect={onSelect}
           setNumWeeksInView={setNumWeeksInView}
         />
         <EventsOverlay
           weekStart={getSunday(firstDay)}
-          events={events}
+          events={cleanEvents(events)}
           dayHeight={dayHeight}
           numWeeksInView={numWeeksInView}
+          onEventClick={onEventClick}
         />
       </div>
     </div>

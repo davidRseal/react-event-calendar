@@ -11,8 +11,6 @@ export default function Month({
   setStartSelected,
   endSelected,
   setEndSelected,
-  events,
-  onEventClick,
   onSelect,
   setNumWeeksInView,
 }) {
@@ -37,17 +35,6 @@ export default function Month({
     return new Date(firstDayCopy.setDate(diff));
   }
 
-  function inEventRange(currDate) {
-    let todaysEvent = null;
-    events.forEach((event) => {
-      if (currDate >= event.start && currDate <= event.end) {
-        todaysEvent = event;
-        return;
-      }
-    });
-    return todaysEvent;
-  }
-
   function getWeek(weekStart) {
     let days = [];
     for (let i = 0; i < 7; i++) {
@@ -67,8 +54,6 @@ export default function Month({
             setEndSelected={setEndSelected}
             highlighting={highlighting}
             setHighlighting={setHighlighting}
-            event={inEventRange(currDate)}
-            onEventClick={onEventClick}
           />
         </td>
       );
@@ -106,16 +91,12 @@ export default function Month({
 
 Month.propTypes = {
   firstDay: PropTypes.object,
-  events: PropTypes.arrayOf(
-    PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
-  ),
   dayHeight: PropTypes.string,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,
   endSelected: PropTypes.object,
   setEndSelected: PropTypes.func,
   clickSelection: PropTypes.bool,
-  onEventClick: PropTypes.func,
   onSelect: PropTypes.func,
   setNumWeeksInView: PropTypes.func,
 };

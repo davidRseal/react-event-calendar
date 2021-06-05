@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Event from './Event';
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -38,33 +39,14 @@ export default function EventsOverlay({
         }}
       >
         <div style={{ height: '50%' }} />
-        <div
-          onClick={col.event ? () => handleEventClick(col.event) : undefined}
-          style={{
-            pointerEvents: col.event ? 'all' : 'none',
-            backgroundColor: col.event ? calendarStyle.eventColor : undefined,
-            boxShadow:
-              col.event && eventsEqual(selectedEvent, col.event)
-                ? 'inset 0 0 0 2px ' + calendarStyle.hoverColor
-                : undefined,
-            borderRadius: '10px',
-            height: '50%',
-            // display: 'flex',
-            // justifyContent: 'center',
-            // alignItems: 'center',
-          }}
-        >
-          {col.event && !!col.event.value && (
-            <div
-              style={{
-                padding: '0 10px 0 10px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {col.event.value}
-            </div>
+        <div style={{ height: '50%' }}>
+          {col.event && (
+            <Event
+              event={col.event}
+              selected={eventsEqual(col.event, selectedEvent)}
+              handleEventClick={handleEventClick}
+              calendarStyle={calendarStyle}
+            />
           )}
         </div>
       </td>

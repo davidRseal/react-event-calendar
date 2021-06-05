@@ -66,40 +66,6 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
         }
       />
     </div>
-    // <div
-    //   style={{
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //   }}
-    // >
-    //   <BsChevronLeft
-    //     style={buttonStyle}
-    //     onClick={() =>
-    //       setFirstDay(
-    //         new Date(firstDay.getFullYear(), firstDay.getMonth() - 1, 1)
-    //       )
-    //     }
-    //   />
-    //   <div
-    //     style={{
-    //       fontSize: '30px',
-    //       minWidth: '300px',
-    //       textAlign: 'center',
-    //       color: calendarStyle.textColor,
-    //       userSelect: 'none',
-    //     }}
-    //   >
-    //     {`${MONTHS[firstDay.getMonth()]} ${firstDay.getFullYear()}`}
-    //   </div>
-    //   <BsChevronRight
-    //     style={buttonStyle}
-    //     onClick={() =>
-    //       setFirstDay(
-    //         new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1)
-    //       )
-    //     }
-    //   />
-    // </div>
   );
 }
 

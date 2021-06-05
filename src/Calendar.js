@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Month from './Month';
 import EventsOverlay from './EventsOverlay';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY = 24 * 60 * 60 * 1000;
 
 export default function Calendar({
   date,
@@ -78,7 +79,12 @@ export default function Calendar({
     return new Date(firstDayCopy.setDate(diff));
   }
 
+  const eventsLength = useRef(null);
   function cleanEvents(events) {
+    if (events.length <= eventsLength.current) {
+      eventsLength.current = events.length;
+      return events;
+    }
     for (let i = 0; i < events.length; i++) {
       let event = events[i];
       if (event.start > event.end) {
@@ -87,6 +93,25 @@ export default function Calendar({
         event.start = temp;
       }
     }
+    events.sort((a, b) => a.start - b.start);
+    for (let a = 0; a < events.length; a++) {
+      for (let b = 0; b < events.length; b++) {
+        if (a === b) continue;
+        let eventA = events[a];
+        let eventB = events[b];
+        if (eventA.start <= eventB.start && eventA.end >= eventB.start) {
+          // if B is fully contained in A
+          if (eventA.end >= eventB.end) {
+            events.splice(b, 1);
+            if (a > b) a--; //reset a when array shifts
+            b--; // reset b for next iteration
+          } else {
+            events[b].start = new Date(eventA.end.getTime() + DAY);
+          }
+        }
+      }
+    }
+    eventsLength.current = events.length;
     return events;
   }
 

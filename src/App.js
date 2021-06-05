@@ -1,14 +1,22 @@
 import React, { useState, useRef } from 'react';
 import Calendar from './Calendar';
 
-// const EVENTS = [
-//   { start: new Date('2021/05/31'), end: new Date('2021/06/01') },
-//   { start: new Date('2021/06/22'), end: new Date('2021/06/29') },
-//   { start: new Date('2021/06/03'), end: new Date('2021/06/06') },
-// ];
+const EVENTS = [
+  { start: new Date('2021/05/31'), end: new Date('2021/06/01') },
+  {
+    start: new Date('2021/06/22'),
+    end: new Date('2021/06/29'),
+    value: <i>spicy text</i>,
+  },
+  {
+    start: new Date('2021/06/03'),
+    end: new Date('2021/06/06'),
+    value: 'text that is very long',
+  },
+];
 
 function App() {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(EVENTS);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   //"user" code
@@ -17,12 +25,12 @@ function App() {
     if (start.getTime() === end.getTime() && prevSelection.current === null) {
       prevSelection.current = start;
     } else if (start.getTime() === end.getTime()) {
-      console.log('click selection');
+      // console.log('click selection');
       setEvents([...events, { start: prevSelection.current, end }]);
       // console.log(prevSelection.current, end);
       prevSelection.current = null;
     } else {
-      console.log('drag selection');
+      // console.log('drag selection');
       // console.log(start, end);
       setEvents([...events, { start, end }]);
     }
@@ -30,7 +38,7 @@ function App() {
 
   //"user" code
   function handleEventClick(event) {
-    console.log('Event clicked');
+    // console.log('Event clicked');
     // console.log(event);
     setSelectedEvent(event);
   }

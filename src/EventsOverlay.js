@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -11,6 +11,22 @@ export default function EventsOverlay({
   onEventClick,
   calendarStyle,
 }) {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  function handleEventClick(event) {
+    setSelectedEvent(event);
+    onEventClick(event);
+  }
+
+  function eventsEqual(eventA, eventB) {
+    return (
+      eventA &&
+      eventB &&
+      eventA.start === eventB.start &&
+      eventA.end === eventB.end
+    );
+  }
+
   function event(col, index) {
     return (
       <td
@@ -23,18 +39,42 @@ export default function EventsOverlay({
       >
         <div style={{ height: '50%' }} />
         <div
-          onClick={col.event ? () => onEventClick(col.event) : undefined}
+          onClick={col.event ? () => handleEventClick(col.event) : undefined}
           style={{
             pointerEvents: col.event ? 'all' : 'none',
             backgroundColor: col.event ? calendarStyle.eventColor : undefined,
+            boxShadow:
+              col.event && eventsEqual(selectedEvent, col.event)
+                ? 'inset 0 0 0 2px ' + calendarStyle.hoverColor
+                : undefined,
+            borderRadius: '10px',
             height: '50%',
+            // display: 'flex',
+            // justifyContent: 'center',
+            // alignItems: 'center',
           }}
-        />
+        >
+          {col.event && !!col.event.value && (
+            <div
+              style={{
+                padding: '0 10px 0 10px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {col.event.value}
+            </div>
+          )}
+        </div>
       </td>
     );
   }
 
   function partitionWeek(currWeekStart) {
+    if (events.length === 2) {
+      console.log('do nothing');
+    }
     let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
     let dayCount = 0;
     let layout = [];
@@ -89,7 +129,7 @@ export default function EventsOverlay({
         <table
           cellSpacing="1"
           cellPadding="0"
-          style={{ width: '100%', paddingTop: '0px' }}
+          style={{ width: '100%', paddingTop: '0px', tableLayout: 'fixed' }}
           key={'event-week-' + i}
         >
           <tbody>
@@ -124,5 +164,6 @@ EventsOverlay.propTypes = {
   onEventClick: PropTypes.func,
   calendarStyle: PropTypes.shape({
     eventColor: PropTypes.string,
+    hoverColor: PropTypes.string,
   }),
 };

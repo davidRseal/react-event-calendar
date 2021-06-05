@@ -39,7 +39,7 @@ export default function Event({
 Event.propTypes = {
   event: PropTypes.object,
   selected: PropTypes.bool,
-  handleEventClick: PropTypes.number,
+  handleEventClick: PropTypes.func,
   calendarStyle: PropTypes.shape({
     eventColor: PropTypes.string,
     hoverColor: PropTypes.string,

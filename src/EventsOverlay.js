@@ -54,9 +54,6 @@ export default function EventsOverlay({
   }
 
   function partitionWeek(currWeekStart) {
-    if (events.length === 2) {
-      console.log('do nothing');
-    }
     let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
     let dayCount = 0;
     let layout = [];

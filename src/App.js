@@ -6,12 +6,12 @@ const EVENTS = [
   {
     start: new Date('2021/06/22'),
     end: new Date('2021/06/29'),
-    value: <i>spicy text</i>,
+    value: <i>italicized text</i>,
   },
   {
     start: new Date('2021/06/03'),
-    end: new Date('2021/06/06'),
-    value: 'text that is very long',
+    end: new Date('2021/06/07'),
+    value: 'text that is somewhat long',
   },
 ];
 
@@ -57,7 +57,12 @@ function App() {
   }
 
   return (
-    <div style={{ backgroundColor: 'rgb(244 244 244)', padding: '50px' }}>
+    <div
+      style={{
+        backgroundColor: 'rgb(244 244 244)',
+        padding: '5px',
+      }}
+    >
       <button onClick={() => setEvents([])}>Delete All Events</button>
       <button onClick={() => deleteEvent(selectedEvent)}>
         Delete Selected Event

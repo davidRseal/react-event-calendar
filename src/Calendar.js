@@ -54,7 +54,10 @@ export default function Calendar({
     let days = [];
     for (let i = 0; i < 7; i++) {
       days.push(
-        <td key={'week-header-' + i} style={{ width: '14.2%', padding: '0px' }}>
+        <td
+          key={'week-header-' + i}
+          style={{ width: 100 / 7 + '%', padding: '0px' }}
+        >
           <div
             style={{
               backgroundColor: defaultCalendarStyle.backgroundColor,
@@ -81,38 +84,38 @@ export default function Calendar({
 
   const eventsLength = useRef(null);
   function cleanEvents(events) {
-    if (events.length <= eventsLength.current) {
-      eventsLength.current = events.length;
+    if (events.length === eventsLength.current) {
       return events;
     }
-    for (let i = 0; i < events.length; i++) {
-      let event = events[i];
+    let cleanEvents = events.map((event) => ({ ...event }));
+    for (let i = 0; i < cleanEvents.length; i++) {
+      let event = cleanEvents[i];
       if (event.start > event.end) {
         let temp = event.end;
         event.end = event.start;
         event.start = temp;
       }
     }
-    events.sort((a, b) => a.start - b.start);
-    for (let a = 0; a < events.length; a++) {
-      for (let b = 0; b < events.length; b++) {
+    cleanEvents.sort((a, b) => a.start - b.start);
+    for (let a = 0; a < cleanEvents.length; a++) {
+      for (let b = 0; b < cleanEvents.length; b++) {
         if (a === b) continue;
-        let eventA = events[a];
-        let eventB = events[b];
+        let eventA = cleanEvents[a];
+        let eventB = cleanEvents[b];
         if (eventA.start <= eventB.start && eventA.end >= eventB.start) {
           // if B is fully contained in A
           if (eventA.end >= eventB.end) {
-            events.splice(b, 1);
+            cleanEvents.splice(b, 1);
             if (a > b) a--; //reset a when array shifts
             b--; // reset b for next iteration
           } else {
-            events[b].start = new Date(eventA.end.getTime() + DAY);
+            cleanEvents[b].start = new Date(eventA.end.getTime() + DAY);
           }
         }
       }
     }
-    eventsLength.current = events.length;
-    return events;
+    eventsLength.current = cleanEvents.length;
+    return cleanEvents;
   }
 
   return (
@@ -123,17 +126,13 @@ export default function Calendar({
         setFirstDay={setFirstDay}
         calendarStyle={defaultCalendarStyle}
       />
-      <table
-        cellSpacing="0"
-        cellPadding="0"
-        style={{
-          width: '100%',
-        }}
-      >
-        <tbody>
-          <tr>{getHeader()}</tr>
-        </tbody>
-      </table>
+      <div style={{ display: 'grid' }}>
+        <table>
+          <tbody>
+            <tr>{getHeader()}</tr>
+          </tbody>
+        </table>
+      </div>
       <div style={{ display: 'grid' }}>
         <Month
           firstDay={firstDay}

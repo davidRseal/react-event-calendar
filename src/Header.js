@@ -20,7 +20,7 @@ const MONTHS = [
 export default function Header({ firstDay, setFirstDay, calendarStyle }) {
   const buttonStyle = {
     cursor: 'pointer',
-    width: '50px',
+    minWidth: '50px',
     textAlign: 'center',
     fontSize: '30px',
     marginTop: 'auto',
@@ -33,6 +33,8 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
       style={{
         display: 'flex',
         justifyContent: 'center',
+        margin: 'auto',
+        maxWidth: '318px',
       }}
     >
       <BsChevronLeft
@@ -44,9 +46,10 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
         }
       />
       <div
+        id="title"
         style={{
+          width: '218px',
           fontSize: '30px',
-          minWidth: '300px',
           textAlign: 'center',
           color: calendarStyle.textColor,
           userSelect: 'none',
@@ -63,6 +66,40 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
         }
       />
     </div>
+    // <div
+    //   style={{
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //   }}
+    // >
+    //   <BsChevronLeft
+    //     style={buttonStyle}
+    //     onClick={() =>
+    //       setFirstDay(
+    //         new Date(firstDay.getFullYear(), firstDay.getMonth() - 1, 1)
+    //       )
+    //     }
+    //   />
+    //   <div
+    //     style={{
+    //       fontSize: '30px',
+    //       minWidth: '300px',
+    //       textAlign: 'center',
+    //       color: calendarStyle.textColor,
+    //       userSelect: 'none',
+    //     }}
+    //   >
+    //     {`${MONTHS[firstDay.getMonth()]} ${firstDay.getFullYear()}`}
+    //   </div>
+    //   <BsChevronRight
+    //     style={buttonStyle}
+    //     onClick={() =>
+    //       setFirstDay(
+    //         new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1)
+    //       )
+    //     }
+    //   />
+    // </div>
   );
 }
 

@@ -5,7 +5,6 @@ import Month from './Month';
 import EventsOverlay from './EventsOverlay';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const DAY = 24 * 60 * 60 * 1000;
 
 export default function Calendar({
   date,
@@ -97,23 +96,6 @@ export default function Calendar({
       }
     }
     cleanEvents.sort((a, b) => a.start - b.start);
-    for (let a = 0; a < cleanEvents.length; a++) {
-      for (let b = 0; b < cleanEvents.length; b++) {
-        if (a === b) continue;
-        let eventA = cleanEvents[a];
-        let eventB = cleanEvents[b];
-        if (eventA.start <= eventB.start && eventA.end >= eventB.start) {
-          // if B is fully contained in A
-          if (eventA.end >= eventB.end) {
-            cleanEvents.splice(b, 1);
-            if (a > b) a--; //reset a when array shifts
-            b--; // reset b for next iteration
-          } else {
-            cleanEvents[b].start = new Date(eventA.end.getTime() + DAY);
-          }
-        }
-      }
-    }
     eventsLength.current = cleanEvents.length;
     return cleanEvents;
   }
@@ -164,7 +146,7 @@ Calendar.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
-  dayHeight: PropTypes.string,
+  dayHeight: PropTypes.number,
   onEventClick: PropTypes.func,
   onSelect: PropTypes.func,
   calendarStyle: PropTypes.shape({
@@ -180,7 +162,7 @@ Calendar.propTypes = {
 
 Calendar.defaultProps = {
   date: new Date(),
-  dayHeight: '100px',
+  dayHeight: 100,
   events: [],
   onEventClick: () => {},
   onSelect: () => {},

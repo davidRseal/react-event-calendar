@@ -79,7 +79,7 @@ export default function Day({
 
 Day.propTypes = {
   viewMonth: PropTypes.number,
-  dayHeight: PropTypes.string,
+  dayHeight: PropTypes.number,
   date: PropTypes.object,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,

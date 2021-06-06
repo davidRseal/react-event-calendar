@@ -93,7 +93,7 @@ export default function Month({
 
 Month.propTypes = {
   firstDay: PropTypes.object,
-  dayHeight: PropTypes.string,
+  dayHeight: PropTypes.number,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,
   endSelected: PropTypes.object,

@@ -28,94 +28,127 @@ export default function EventsOverlay({
     );
   }
 
-  function event(col, index) {
+  function getEvent(col, index) {
     return (
-      <td
-        key={'week-column-' + index}
-        style={{
-          width: (100 * col.numDays) / 7 + '%',
-          padding: '0px',
-          height: dayHeight,
-        }}
-      >
-        <div style={{ height: '50%' }} />
-        <div style={{ height: '50%' }}>
-          {col.event && (
-            <Event
-              event={col.event}
-              selected={eventsEqual(col.event, selectedEvent)}
-              handleEventClick={handleEventClick}
-              calendarStyle={calendarStyle}
-            />
-          )}
-        </div>
-      </td>
+      <div key={'week-column-' + index}>
+        {col.event && (
+          <Event
+            event={col.event.originalEvent}
+            selected={eventsEqual(col.event.originalEvent, selectedEvent)}
+            handleEventClick={handleEventClick}
+            calendarStyle={calendarStyle}
+          />
+        )}
+      </div>
     );
   }
 
-  function partitionWeek(currWeekStart) {
-    let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
-    let dayCount = 0;
+  function buildWeekLayout(currWeekStart, weekEvents) {
     let layout = [];
+    let numDays = 0;
+    while (weekEvents.length) {
+      let currDay = new Date(currWeekStart.getTime());
+      let currLayout = [];
+      let nextLayer = [];
+      while (weekEvents.length) {
+        let currEvent = weekEvents.shift();
+        if (currEvent.start.getTime() < currDay.getTime()) {
+          nextLayer.push(currEvent);
+          continue;
+        }
+        if (currDay.getTime() < currEvent.start.getTime()) {
+          numDays = (currEvent.start.getTime() - currDay.getTime()) / DAY;
+          currLayout.push({ numDays: numDays });
+          numDays =
+            1 + (currEvent.end.getTime() - currEvent.start.getTime()) / DAY;
+          currLayout.push({ numDays: numDays, event: currEvent });
+        } else {
+          numDays =
+            1 + (currEvent.end.getTime() - currEvent.start.getTime()) / DAY;
+          currLayout.push({ numDays: numDays, event: currEvent });
+        }
+        currDay.setTime(currEvent.end.getTime() + DAY);
+      }
+      let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
+      if (currDay.getTime() < nextWeekStart.getTime()) {
+        numDays = (nextWeekStart.getTime() - currDay.getTime()) / DAY;
+        currLayout.push({ numDays: numDays });
+      }
+      weekEvents = nextLayer;
+      layout.push(currLayout);
+    }
+    return layout;
+  }
+
+  function trimThisWeeksEvents(currWeekStart) {
+    let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
     let thisWeeksEvents = events
       .filter(
         (event) => currWeekStart <= event.end && nextWeekStart > event.start
       )
       .sort((a, b) => a.start - b.start);
-    while (dayCount < 7) {
-      if (thisWeeksEvents.length === 0) {
-        let numDays = 7 - dayCount;
-        layout.push({ numDays: numDays });
-        dayCount = 7;
-        break;
-      }
-      let currDay = new Date(currWeekStart.getTime() + dayCount * DAY);
-      let currEvent = thisWeeksEvents.splice(0, 1)[0];
-      if (currDay.getTime() >= currEvent.start.getTime()) {
-        let numDays = 1 + (currEvent.end.getTime() - currDay.getTime()) / DAY;
-        numDays = numDays > 7 - dayCount ? 7 - dayCount : numDays;
-        dayCount += numDays;
-        layout.push({ numDays: numDays, event: currEvent });
-      } else {
-        let numDays = (currEvent.start.getTime() - currDay.getTime()) / DAY;
-        numDays = numDays > 7 - dayCount ? 7 - dayCount : numDays;
-        dayCount += numDays;
-        layout.push({ numDays: numDays });
-        numDays =
-          1 + (currEvent.end.getTime() - currEvent.start.getTime()) / DAY;
-        numDays = numDays > 7 - dayCount ? 7 - dayCount : numDays;
-        dayCount += numDays;
-        layout.push({ numDays: numDays, event: currEvent });
-      }
-    }
-    return layout;
+    let eventsCopy = thisWeeksEvents.map((event) => ({ ...event }));
+    eventsCopy.forEach((trimmedEvent) => {
+      trimmedEvent.originalEvent = { ...trimmedEvent };
+      if (trimmedEvent.start < currWeekStart)
+        trimmedEvent.start = new Date(currWeekStart.getTime());
+      if (trimmedEvent.end >= nextWeekStart)
+        trimmedEvent.end = new Date(nextWeekStart.getTime() - DAY);
+    });
+    return eventsCopy;
   }
 
-  function getWeek(currWeekStart) {
-    let weekLayout = partitionWeek(currWeekStart);
+  function buildGridTemplate(weekLayer) {
+    let result = '';
+    weekLayer.forEach((col) => (result += (100 * col.numDays) / 7 + '% '));
+    return result;
+  }
+
+  function getWeekLayer(weekLayer) {
     let columns = [];
-    weekLayout.forEach((col, index) => {
-      columns.push(event(col, index));
+    weekLayer.forEach((col, index) => {
+      columns.push(getEvent(col, index));
     });
     return columns;
+  }
+
+  let weekCount = 0;
+  function getWeek(currWeekStart) {
+    let weekEvents = trimThisWeeksEvents(currWeekStart);
+    let weekLayout = buildWeekLayout(currWeekStart, weekEvents);
+    let layers = [];
+    weekLayout.forEach((layer, index) => {
+      let layerTemplate = buildGridTemplate(layer);
+      layers.push(
+        <div
+          key={'week-' + weekCount + '-layer-' + index}
+          style={{
+            display: 'grid',
+            gap: '0px 0px',
+            gridTemplateColumns: layerTemplate,
+            gridTemplateRows: (dayHeight * 0.75) / weekLayout.length,
+          }}
+        >
+          {getWeekLayer(layer)}
+        </div>
+      );
+    });
+    return (
+      <div
+        key={'week-' + weekCount++}
+        style={{ height: dayHeight, paddingTop: '2px' }}
+      >
+        <div style={{ height: dayHeight / 4 }} />
+        {layers}
+      </div>
+    );
   }
 
   function getEventOverlay() {
     let weeks = [];
     for (let i = 0; i < numWeeksInView; i++) {
       let currWeekStart = new Date(weekStart.getTime() + i * 7 * DAY);
-      weeks.push(
-        <table
-          cellSpacing="1"
-          cellPadding="0"
-          style={{ width: '100%', paddingTop: '0px', tableLayout: 'fixed' }}
-          key={'event-week-' + i}
-        >
-          <tbody>
-            <tr>{getWeek(currWeekStart)}</tr>
-          </tbody>
-        </table>
-      );
+      weeks.push(getWeek(currWeekStart));
     }
     return weeks;
   }
@@ -138,7 +171,7 @@ EventsOverlay.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
-  dayHeight: PropTypes.string,
+  dayHeight: PropTypes.number,
   numWeeksInView: PropTypes.number,
   onEventClick: PropTypes.func,
   calendarStyle: PropTypes.shape({

@@ -9,9 +9,13 @@ const EVENTS = [
     value: <i>italicized text</i>,
   },
   {
-    start: new Date('2021/06/03'),
+    start: new Date('2021/06/01'),
     end: new Date('2021/06/07'),
     value: 'text that is somewhat long',
+  },
+  {
+    start: new Date('2021/06/03'),
+    end: new Date('2021/06/04'),
   },
 ];
 
@@ -60,7 +64,7 @@ function App() {
     <div
       style={{
         backgroundColor: 'rgb(244 244 244)',
-        padding: '5px',
+        padding: '20px',
       }}
     >
       <button onClick={() => setEvents([])}>Delete All Events</button>
@@ -70,7 +74,7 @@ function App() {
       {/* Calendar that creates events after every range selection */}
       <Calendar
         events={events}
-        dayHeight={'100px'}
+        dayHeight={100}
         onEventClick={(event) => handleEventClick(event)}
         onSelect={(start, end) => handleSelect(start, end)}
         calendarStyle={{

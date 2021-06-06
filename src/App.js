@@ -2,15 +2,15 @@ import React, { useState, useRef } from 'react';
 import Calendar from './Calendar';
 
 const EVENTS = [
-  { start: new Date('2021/05/31'), end: new Date('2021/06/01') },
+  { start: new Date('2021/06/01'), end: new Date('2021/05/31') },
   {
     start: new Date('2021/06/22'),
     end: new Date('2021/06/29'),
     value: <i>italicized text</i>,
   },
   {
-    start: new Date('2021/06/01'),
-    end: new Date('2021/06/07'),
+    start: new Date('2021/06/07'),
+    end: new Date('2021/06/01'),
     value: 'text that is somewhat long',
   },
   {

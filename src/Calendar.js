@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Header from './Header';
 import Month from './Month';
@@ -81,25 +81,6 @@ export default function Calendar({
     return new Date(firstDayCopy.setDate(diff));
   }
 
-  const eventsLength = useRef(null);
-  function cleanEvents(events) {
-    if (events.length === eventsLength.current) {
-      return events;
-    }
-    let cleanEvents = events.map((event) => ({ ...event }));
-    for (let i = 0; i < cleanEvents.length; i++) {
-      let event = cleanEvents[i];
-      if (event.start > event.end) {
-        let temp = event.end;
-        event.end = event.start;
-        event.start = temp;
-      }
-    }
-    cleanEvents.sort((a, b) => a.start - b.start);
-    eventsLength.current = cleanEvents.length;
-    return cleanEvents;
-  }
-
   return (
     <div style={{ backgroundColor: defaultCalendarStyle.backgroundColor }}>
       <Header
@@ -130,7 +111,7 @@ export default function Calendar({
         />
         <EventsOverlay
           weekStart={getSunday(firstDay)}
-          events={cleanEvents(events)}
+          events={events}
           dayHeight={dayHeight}
           numWeeksInView={numWeeksInView}
           onEventClick={onEventClick}

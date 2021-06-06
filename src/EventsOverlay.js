@@ -19,12 +19,12 @@ export default function EventsOverlay({
     onEventClick(event);
   }
 
-  function eventsEqual(eventA, eventB) {
+  function eventsEqual(eventA) {
     return (
       eventA &&
-      eventB &&
-      eventA.start === eventB.start &&
-      eventA.end === eventB.end
+      selectedEvent &&
+      eventA.start === selectedEvent.start &&
+      eventA.end === selectedEvent.end
     );
   }
 
@@ -34,7 +34,7 @@ export default function EventsOverlay({
         {col.event && (
           <Event
             event={col.event.originalEvent}
-            selected={eventsEqual(col.event.originalEvent, selectedEvent)}
+            selected={eventsEqual(col.event.originalEvent)}
             handleEventClick={handleEventClick}
             calendarStyle={calendarStyle}
           />
@@ -52,22 +52,29 @@ export default function EventsOverlay({
       let nextLayer = [];
       while (weekEvents.length) {
         let currEvent = weekEvents.shift();
-        if (currEvent.start.getTime() < currDay.getTime()) {
+        if (currEvent.displayStart.getTime() < currDay.getTime()) {
           nextLayer.push(currEvent);
           continue;
         }
-        if (currDay.getTime() < currEvent.start.getTime()) {
-          numDays = (currEvent.start.getTime() - currDay.getTime()) / DAY;
+        if (currDay.getTime() < currEvent.displayStart.getTime()) {
+          numDays =
+            (currEvent.displayStart.getTime() - currDay.getTime()) / DAY;
           currLayout.push({ numDays: numDays });
           numDays =
-            1 + (currEvent.end.getTime() - currEvent.start.getTime()) / DAY;
+            1 +
+            (currEvent.displayEnd.getTime() -
+              currEvent.displayStart.getTime()) /
+              DAY;
           currLayout.push({ numDays: numDays, event: currEvent });
         } else {
           numDays =
-            1 + (currEvent.end.getTime() - currEvent.start.getTime()) / DAY;
+            1 +
+            (currEvent.displayEnd.getTime() -
+              currEvent.displayStart.getTime()) /
+              DAY;
           currLayout.push({ numDays: numDays, event: currEvent });
         }
-        currDay.setTime(currEvent.end.getTime() + DAY);
+        currDay.setTime(currEvent.displayEnd.getTime() + DAY);
       }
       let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
       if (currDay.getTime() < nextWeekStart.getTime()) {
@@ -83,19 +90,50 @@ export default function EventsOverlay({
   function trimThisWeeksEvents(currWeekStart) {
     let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
     let thisWeeksEvents = events
-      .filter(
-        (event) => currWeekStart <= event.end && nextWeekStart > event.start
-      )
-      .sort((a, b) => a.start - b.start);
-    let eventsCopy = thisWeeksEvents.map((event) => ({ ...event }));
-    eventsCopy.forEach((trimmedEvent) => {
-      trimmedEvent.originalEvent = { ...trimmedEvent };
-      if (trimmedEvent.start < currWeekStart)
-        trimmedEvent.start = new Date(currWeekStart.getTime());
-      if (trimmedEvent.end >= nextWeekStart)
-        trimmedEvent.end = new Date(nextWeekStart.getTime() - DAY);
+      .filter((event) => {
+        if (event.start <= event.end) {
+          return currWeekStart <= event.end && nextWeekStart > event.start;
+        } else {
+          return currWeekStart <= event.start && nextWeekStart > event.end;
+        }
+      })
+      .sort((a, b) => {
+        if (a.start <= a.end && b.start <= b.end) {
+          return a.start - b.start;
+        } else if (a.end < a.start && b.end < b.start) {
+          return a.end - b.end;
+        } else if (a.start <= a.end && b.end < b.start) {
+          return a.start - b.end;
+        } else {
+          return a.end - b.start;
+        }
+      });
+    let displayEvents = [];
+    thisWeeksEvents.forEach((event) => {
+      let displayEvent = {};
+      displayEvent.originalEvent = { ...event };
+      if (event.start <= event.end) {
+        displayEvent.displayStart = new Date(event.start.getTime());
+        displayEvent.displayEnd = new Date(event.end.getTime());
+        if (event.start < currWeekStart)
+          displayEvent.displayStart = new Date(currWeekStart.getTime());
+        if (event.end >= nextWeekStart)
+          displayEvent.displayEnd = new Date(nextWeekStart.getTime() - DAY);
+      } else {
+        displayEvent.displayStart = new Date(event.end.getTime());
+        displayEvent.displayEnd = new Date(event.start.getTime());
+        if (event.end < currWeekStart)
+          displayEvent.displayStart = new Date(currWeekStart.getTime());
+        if (event.start >= nextWeekStart)
+          displayEvent.displayEnd = new Date(nextWeekStart.getTime() - DAY);
+      }
+      displayEvents.push(displayEvent);
     });
-    return eventsCopy;
+    // displayEvents will have 1 item for every event in a given week,
+    // and each item will have the displayStart and displayEnd dates, as
+    // well as the originalEvent object.
+    // each originalEvent can be broken into one displayEvent for each week it spans
+    return displayEvents;
   }
 
   function buildGridTemplate(weekLayer) {

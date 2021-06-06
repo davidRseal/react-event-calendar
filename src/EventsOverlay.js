@@ -138,7 +138,9 @@ export default function EventsOverlay({
 
   function buildGridTemplate(weekLayer) {
     let result = '';
-    weekLayer.forEach((col) => (result += (100 * col.numDays) / 7 + '% '));
+    weekLayer.forEach((col) => {
+      result += 'minmax(0,' + (100 * col.numDays) / 7 + '%)';
+    });
     return result;
   }
 

@@ -2,7 +2,11 @@ import React, { useState, useRef } from 'react';
 import Calendar from './Calendar';
 
 const EVENTS = [
-  { start: new Date('2021/06/01'), end: new Date('2021/05/31') },
+  {
+    start: new Date('2021/06/01'),
+    end: new Date('2021/05/31'),
+    value: 'text',
+  },
   {
     start: new Date('2021/06/22'),
     end: new Date('2021/06/29'),
@@ -16,6 +20,8 @@ const EVENTS = [
   {
     start: new Date('2021/06/03'),
     end: new Date('2021/06/04'),
+    value: 'red event',
+    color: 'red',
   },
 ];
 
@@ -26,17 +32,30 @@ function App() {
   //"user" code
   let prevSelection = useRef(null);
   function handleSelect(start, end) {
+    var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+    const eventStuff = {
+      color: randomColor,
+      value: 'text',
+    };
     if (start.getTime() === end.getTime() && prevSelection.current === null) {
       prevSelection.current = start;
     } else if (start.getTime() === end.getTime()) {
       // console.log('click selection');
-      setEvents([...events, { start: prevSelection.current, end }]);
+      setEvents([
+        ...events,
+        {
+          start: prevSelection.current,
+          end,
+          ...eventStuff,
+        },
+      ]);
       // console.log(prevSelection.current, end);
       prevSelection.current = null;
     } else {
       // console.log('drag selection');
       // console.log(start, end);
-      setEvents([...events, { start, end }]);
+
+      setEvents([...events, { start, end, ...eventStuff }]);
     }
   }
 

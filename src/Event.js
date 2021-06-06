@@ -12,7 +12,7 @@ export default function Event({
       onClick={() => handleEventClick(event)}
       style={{
         pointerEvents: 'all',
-        backgroundColor: calendarStyle.eventColor,
+        backgroundColor: event.color ? event.color : calendarStyle.eventColor,
         boxShadow: selected
           ? 'inset 0 0 0 2px ' + calendarStyle.hoverColor
           : undefined,
@@ -27,6 +27,7 @@ export default function Event({
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            lineHeight: '20px',
           }}
         >
           {event.value}

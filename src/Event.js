@@ -21,13 +21,23 @@ export default function Event({
       }}
     >
       {!!event.value && (
+        // <div
+        //   style={{
+        //     padding: '0 10px 0 10px',
+        //     whiteSpace: 'nowrap',
+        //     overflow: 'hidden',
+        //     textOverflow: 'ellipsis',
+        //     lineHeight: '20px',
+        //   }}
+        // >
         <div
           style={{
             padding: '0 10px 0 10px',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            lineHeight: '20px',
+            height: '100%',
+            position: 'relative',
           }}
         >
           {event.value}

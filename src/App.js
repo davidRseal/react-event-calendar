@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Calendar from './Calendar';
+import { TiDelete } from 'react-icons/ti';
 
 const EVENTS = [
   {
@@ -15,7 +16,8 @@ const EVENTS = [
   {
     start: new Date('2021/06/07'),
     end: new Date('2021/06/01'),
-    value: 'text that is somewhat long',
+    value:
+      'text that is much longer than it should be that will probably not fit in a single row',
   },
   {
     start: new Date('2021/06/03'),
@@ -25,22 +27,50 @@ const EVENTS = [
   },
 ];
 
+// const centeredItem = () => {
+//   return (
+//     <div
+//       style={{
+//         margin: 0,
+//         position: 'absolute',
+//         top: '50%',
+//         left: '50%',
+//         transform: 'translate(-50%, -50%)',
+//       }}
+//     >
+//     </div>
+//   );
+// };
+
 function App() {
   const [events, setEvents] = useState(EVENTS);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   //"user" code
   let prevSelection = useRef(null);
+  const deleting = useRef(false);
   function handleSelect(start, end) {
-    var randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+    var randomColor = '#' + Math.floor(Math.random() * 16777210).toString(16);
     const eventStuff = {
       color: randomColor,
-      value: 'text',
+      value: (
+        <div
+          style={{
+            margin: 0,
+            float: 'right',
+            fontSize: '20px',
+          }}
+        >
+          <TiDelete
+            style={{ cursor: 'pointer' }}
+            onClick={() => (deleting.current = true)}
+          />
+        </div>
+      ),
     };
     if (start.getTime() === end.getTime() && prevSelection.current === null) {
       prevSelection.current = start;
     } else if (start.getTime() === end.getTime()) {
-      // console.log('click selection');
       setEvents([
         ...events,
         {
@@ -49,21 +79,19 @@ function App() {
           ...eventStuff,
         },
       ]);
-      // console.log(prevSelection.current, end);
       prevSelection.current = null;
     } else {
-      // console.log('drag selection');
-      // console.log(start, end);
-
       setEvents([...events, { start, end, ...eventStuff }]);
     }
   }
 
   //"user" code
   function handleEventClick(event) {
-    // console.log('Event clicked');
-    // console.log(event);
     setSelectedEvent(event);
+    if (deleting.current) {
+      deleting.current = false;
+      deleteEvent(event);
+    }
   }
 
   function deleteEvent(event) {

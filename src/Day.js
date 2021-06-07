@@ -70,7 +70,13 @@ export default function Day({
         ...(inSelectionRange() ? style.focus : null),
       }}
     >
-      <div style={{ padding: '5px', color: calendarStyle.textColor }}>
+      <div
+        style={{
+          lineHeight: '15px',
+          padding: '5px',
+          color: calendarStyle.textColor,
+        }}
+      >
         {date.getDate()}
       </div>
     </div>

@@ -50,7 +50,14 @@ function App() {
   let prevSelection = useRef(null);
   const deleting = useRef(false);
   function handleSelect(start, end) {
-    var randomColor = '#' + Math.floor(Math.random() * 16777210).toString(16);
+    var randomColor =
+      'rgb(' +
+      Math.floor(Math.random() * 256) +
+      ',' +
+      Math.floor(Math.random() * 256) +
+      ',' +
+      Math.floor(Math.random() * 256) +
+      ')';
     const eventStuff = {
       color: randomColor,
       value: (

@@ -5,14 +5,31 @@ import Event from './Event';
 const DAY = 24 * 60 * 60 * 1000;
 
 export default function EventsOverlay({
-  weekStart,
+  firstDay,
   events,
   dayHeight,
-  numWeeksInView,
   onEventClick,
   calendarStyle,
 }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  function getSunday() {
+    let firstDayCopy = new Date(firstDay);
+    let day = firstDayCopy.getDay();
+    let diff = firstDayCopy.getDate() - day;
+    return new Date(firstDayCopy.setDate(diff));
+  }
+
+  function getNumWeeksInView(weekStart) {
+    let i = 4;
+    for (; i < 6; i++) {
+      let currDate = new Date(weekStart.getTime() + i * 7 * DAY);
+      if (currDate.getMonth() !== firstDay.getMonth()) {
+        return i;
+      }
+    }
+    return i;
+  }
 
   function handleEventClick(event) {
     setSelectedEvent(event);
@@ -185,7 +202,9 @@ export default function EventsOverlay({
   }
 
   function getEventOverlay() {
+    let weekStart = getSunday(firstDay);
     let weeks = [];
+    let numWeeksInView = getNumWeeksInView(weekStart);
     for (let i = 0; i < numWeeksInView; i++) {
       let currWeekStart = new Date(weekStart.getTime() + i * 7 * DAY);
       weeks.push(getWeek(currWeekStart));
@@ -207,12 +226,11 @@ export default function EventsOverlay({
 }
 
 EventsOverlay.propTypes = {
-  weekStart: PropTypes.object,
+  firstDay: PropTypes.object,
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
   dayHeight: PropTypes.number,
-  numWeeksInView: PropTypes.number,
   onEventClick: PropTypes.func,
   calendarStyle: PropTypes.shape({
     eventColor: PropTypes.string,

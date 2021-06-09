@@ -12,7 +12,6 @@ export default function Month({
   endSelected,
   setEndSelected,
   onSelect,
-  setNumWeeksInView,
   calendarStyle,
 }) {
   const [highlighting, setHighlighting] = useState(false);
@@ -60,15 +59,13 @@ export default function Month({
   function getMonth() {
     let weekStart = getSunday();
     let weeks = [];
-    let i = 0;
-    for (; i < 6; i++) {
+    for (let i = 0; i < 6; i++) {
       let currDate = new Date(weekStart.getTime() + i * 7 * DAY);
       if (i > 4 && currDate.getMonth() !== firstDay.getMonth()) {
         break;
       }
       weeks.push(<tr key={'month-row-' + i}>{getWeek(currDate)}</tr>);
     }
-    setNumWeeksInView(i);
     return weeks;
   }
 
@@ -94,7 +91,6 @@ Month.propTypes = {
   setEndSelected: PropTypes.func,
   clickSelection: PropTypes.bool,
   onSelect: PropTypes.func,
-  setNumWeeksInView: PropTypes.func,
   calendarStyle: PropTypes.shape({
     backgroundColor: PropTypes.string,
     secondaryColor: PropTypes.string,

@@ -19,7 +19,6 @@ export default function Calendar({
   );
   const [startSelected, setStartSelected] = useState(null);
   const [endSelected, setEndSelected] = useState(null);
-  const [numWeeksInView, setNumWeeksInView] = useState(0);
 
   const defaultCalendarStyle = {
     backgroundColor: 'white',
@@ -74,13 +73,6 @@ export default function Calendar({
     return days;
   }
 
-  function getSunday() {
-    let firstDayCopy = new Date(firstDay);
-    let day = firstDayCopy.getDay();
-    let diff = firstDayCopy.getDate() - day;
-    return new Date(firstDayCopy.setDate(diff));
-  }
-
   return (
     <div style={{ backgroundColor: defaultCalendarStyle.backgroundColor }}>
       <Header
@@ -106,14 +98,12 @@ export default function Calendar({
           clickSelection={false}
           dayHeight={dayHeight}
           onSelect={onSelect}
-          setNumWeeksInView={setNumWeeksInView}
           calendarStyle={defaultCalendarStyle}
         />
         <EventsOverlay
-          weekStart={getSunday(firstDay)}
+          firstDay={firstDay}
           events={events}
           dayHeight={dayHeight}
-          numWeeksInView={numWeeksInView}
           onEventClick={onEventClick}
           calendarStyle={defaultCalendarStyle}
         />

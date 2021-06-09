@@ -16,18 +16,12 @@ export default function Month({
   calendarStyle,
 }) {
   const [highlighting, setHighlighting] = useState(false);
-  let numWeeksInView = 0;
 
   useEffect(() => {
     if (!highlighting && startSelected && endSelected) {
       onSelect(startSelected, endSelected);
     }
   }, [startSelected, endSelected]);
-
-  useEffect(() => {
-    //just to avoid updating Calendar's state while this component renders
-    setNumWeeksInView(numWeeksInView);
-  }, []);
 
   function getSunday() {
     let firstDayCopy = new Date(firstDay);
@@ -74,7 +68,7 @@ export default function Month({
       }
       weeks.push(<tr key={'month-row-' + i}>{getWeek(currDate)}</tr>);
     }
-    numWeeksInView = i;
+    setNumWeeksInView(i);
     return weeks;
   }
 

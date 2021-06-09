@@ -94,6 +94,7 @@ function App() {
     }
   }
 
+  //"user" code
   function deleteEvent(event) {
     if (event === null) {
       return;
@@ -141,6 +142,7 @@ function App() {
           selectColor: 'none',
         }}
       /> */}
+      {/* <Calendar events={EVENTS} /> */}
     </div>
   );
 }

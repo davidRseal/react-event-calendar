@@ -183,7 +183,7 @@ export default function EventsOverlay({
             display: 'grid',
             gap: '0px 0px',
             gridTemplateColumns: layerTemplate,
-            gridTemplateRows: (dayHeight * 0.75) / weekLayout.length,
+            gridTemplateRows: (dayHeight - 25) / weekLayout.length,
           }}
         >
           {getWeekLayer(layer)}
@@ -195,7 +195,7 @@ export default function EventsOverlay({
         key={'week-' + weekCount++}
         style={{ height: dayHeight, paddingTop: '2px' }}
       >
-        <div style={{ height: dayHeight / 4 }} />
+        <div style={{ height: '25px' }} />
         {layers}
       </div>
     );

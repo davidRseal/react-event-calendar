@@ -15,6 +15,7 @@ export default function Month({
   calendarStyle,
 }) {
   const [highlighting, setHighlighting] = useState(false);
+  console.log(highlighting)
 
   useEffect(() => {
     if (!highlighting && startSelected && endSelected) {
@@ -83,13 +84,13 @@ export default function Month({
 }
 
 Month.propTypes = {
+  // the first day of the month. Not necessarily the first day on the calendar because of week overlap
   firstDay: PropTypes.object,
   dayHeight: PropTypes.number,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,
   endSelected: PropTypes.object,
   setEndSelected: PropTypes.func,
-  clickSelection: PropTypes.bool,
   onSelect: PropTypes.func,
   calendarStyle: PropTypes.shape({
     backgroundColor: PropTypes.string,

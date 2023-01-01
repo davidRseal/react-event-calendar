@@ -2,45 +2,17 @@ import React, { useState, useRef } from 'react';
 import Calendar from './Calendar';
 import { TiDelete } from 'react-icons/ti';
 
+const TODAY = new Date();
+const TOMORROW = new Date(TODAY);
+TOMORROW.setDate(TODAY.getDate() + 1);
 const EVENTS = [
   {
-    start: new Date('2021/06/01'),
-    end: new Date('2021/05/31'),
-    value: 'text',
-  },
-  {
-    start: new Date('2021/06/22'),
-    end: new Date('2021/06/29'),
-    value: <i>italicized text</i>,
-  },
-  {
-    start: new Date('2021/06/07'),
-    end: new Date('2021/06/01'),
-    value:
-      'text that is much longer than it should be that will probably not fit in a single row',
-  },
-  {
-    start: new Date('2021/06/03'),
-    end: new Date('2021/06/04'),
-    value: 'red event',
-    color: 'red',
-  },
+    start: TODAY,
+    end: TOMORROW,
+    value: 'Events can have any content or color',
+    color: 'red'
+  }
 ];
-
-// const centeredItem = () => {
-//   return (
-//     <div
-//       style={{
-//         margin: 0,
-//         position: 'absolute',
-//         top: '50%',
-//         left: '50%',
-//         transform: 'translate(-50%, -50%)',
-//       }}
-//     >
-//     </div>
-//   );
-// };
 
 function App() {
   const [events, setEvents] = useState(EVENTS);
@@ -50,7 +22,7 @@ function App() {
   let prevSelection = useRef(null);
   const deleting = useRef(false);
   function handleSelect(start, end) {
-    var randomColor =
+    let randomColor =
       'rgb(' +
       Math.floor(Math.random() * 256) +
       ',' +

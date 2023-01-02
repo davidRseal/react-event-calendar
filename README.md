@@ -1,12 +1,12 @@
-# REACT-EVENT-CALENDAR Storybook app
+# REACT-EVENT-CALENDAR Storybook app 
+# (live demo: https://davidrseal.github.io/react-event-calendar)
 
 This project was generated using the Storybook guide here <https://storybook.js.org/tutorials/intro-to-storybook/react/en/get-started/>
 
 My contribution is the Calendar componenent at `src/stories/Calendar.jsx` which is an interactive calendar component for scheduling and viewing "events." It's meant to be integrated into React apps.
 
 Code examples are at `src/stories/Calendar.stories.jsx` and there's an interactive demo within Storybook if you run the app.
-
-The Storybook is also statically hosted at https://63b25cd6cad2e777d8815211-yqjysjwnje.chromatic.com/ through this [Chromatic project](https://www.chromatic.com/build?appId=63b25cd6cad2e777d8815211&number=1) but it has privileged access. 
+The Storybook is statically hosted at https://davidrseal.github.io/react-event-calendar through GitHub Pages.
 
 ## Quick start
 

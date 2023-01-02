@@ -24,3 +24,5 @@ yarn-error.log*
 
 .idea
 .vscode
+storybook-static
+build-storybook.log

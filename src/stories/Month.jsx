@@ -15,7 +15,6 @@ export default function Month({
   calendarStyle,
 }) {
   const [highlighting, setHighlighting] = useState(false);
-  console.log(highlighting)
 
   useEffect(() => {
     if (!highlighting && startSelected && endSelected) {

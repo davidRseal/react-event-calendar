@@ -57,7 +57,14 @@ export default function Calendar({
   }
 
   return (
-    <div style={{ backgroundColor: defaultCalendarStyle.backgroundColor }}>
+    <div
+      style={{ backgroundColor: defaultCalendarStyle.backgroundColor }}
+      onMouseLeave={() => {
+        // purge the highlighting information if the cursor leaves the Calendar
+        setStartSelected(null);
+        setEndSelected(null);
+      }}
+    >
       <Header
         firstDay={firstDay}
         setFirstDay={setFirstDay}
@@ -70,14 +77,7 @@ export default function Calendar({
           </tbody>
         </table>
       </div>
-      <div
-        style={{ display: 'grid' }}
-        onMouseLeave={() => {
-          // purge the highlighting information if the cursor leaves the Calendar
-          setStartSelected(null);
-          setEndSelected(null);
-        }}
-      >
+      <div style={{ display: 'grid' }}>
         <Month
           firstDay={firstDay}
           startSelected={startSelected}
@@ -114,7 +114,7 @@ Calendar.propTypes = {
   onEventClick: PropTypes.func,
   // callback function for whenever a mouseUp event occurs
   onSelect: PropTypes.func,
-  // custom themeing object
+  // custom theming object
   calendarStyle: PropTypes.shape({
     backgroundColor: PropTypes.string,
     secondaryColor: PropTypes.string,

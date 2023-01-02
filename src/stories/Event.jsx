@@ -21,15 +21,6 @@ export default function Event({
       }}
     >
       {!!event.value && (
-        // <div
-        //   style={{
-        //     padding: '0 10px 0 10px',
-        //     whiteSpace: 'nowrap',
-        //     overflow: 'hidden',
-        //     textOverflow: 'ellipsis',
-        //     lineHeight: '20px',
-        //   }}
-        // >
         <div
           style={{
             padding: '0 10px 0 10px',
@@ -48,7 +39,9 @@ export default function Event({
 }
 
 Event.propTypes = {
+  // Date range representing this Event
   event: PropTypes.object,
+  // whether it should display as selected or not
   selected: PropTypes.bool,
   handleEventClick: PropTypes.func,
   calendarStyle: PropTypes.shape({

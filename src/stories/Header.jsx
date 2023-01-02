@@ -71,7 +71,6 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
 
 Header.propTypes = {
   firstDay: PropTypes.object,
-  month: PropTypes.number,
   setFirstDay: PropTypes.func,
   calendarStyle: PropTypes.shape({
     textColor: PropTypes.string,

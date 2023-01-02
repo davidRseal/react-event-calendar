@@ -60,6 +60,16 @@ export default function EventsOverlay({
     );
   }
 
+  // return number of days between the date of A and the date of B
+  // positive if A comes before B
+  // negative if B comes before A
+  function getNumDaysBetween(dayA, dayB) {
+    const unixDayA = Math.trunc(dayA.getTime() / DAY);
+    const unixDayB = Math.trunc(dayB.getTime() / DAY);
+    let result = unixDayB - unixDayA;
+    return result;
+  }
+
   function buildWeekLayout(currWeekStart, weekEvents) {
     let layout = [];
     let numDays = 0;
@@ -69,33 +79,26 @@ export default function EventsOverlay({
       let nextLayer = [];
       while (weekEvents.length) {
         let currEvent = weekEvents.shift();
-        if (currEvent.displayStart.getTime() < currDay.getTime()) {
+        if (getNumDaysBetween(currDay, currEvent.displayStart) < 0) {
           nextLayer.push(currEvent);
           continue;
         }
-        if (currDay.getTime() < currEvent.displayStart.getTime()) {
-          numDays =
-            (currEvent.displayStart.getTime() - currDay.getTime()) / DAY;
+        if (getNumDaysBetween(currDay, currEvent.displayStart) > 0) {
+          numDays = getNumDaysBetween(currDay, currEvent.displayStart);
           currLayout.push({ numDays: numDays });
           numDays =
-            1 +
-            (currEvent.displayEnd.getTime() -
-              currEvent.displayStart.getTime()) /
-              DAY;
+            1 + getNumDaysBetween(currEvent.displayStart, currEvent.displayEnd);
           currLayout.push({ numDays: numDays, event: currEvent });
         } else {
           numDays =
-            1 +
-            (currEvent.displayEnd.getTime() -
-              currEvent.displayStart.getTime()) /
-              DAY;
+            1 + getNumDaysBetween(currEvent.displayStart, currEvent.displayEnd);
           currLayout.push({ numDays: numDays, event: currEvent });
         }
         currDay.setTime(currEvent.displayEnd.getTime() + DAY);
       }
       let nextWeekStart = new Date(currWeekStart.getTime() + 7 * DAY);
-      if (currDay.getTime() < nextWeekStart.getTime()) {
-        numDays = (nextWeekStart.getTime() - currDay.getTime()) / DAY;
+      if (getNumDaysBetween(currDay, nextWeekStart) > 0) {
+        numDays = getNumDaysBetween(currDay, nextWeekStart);
         currLayout.push({ numDays: numDays });
       }
       weekEvents = nextLayer;

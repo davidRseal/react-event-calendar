@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import './App.css';
 
 export default function Day({
   viewMonth,
@@ -84,8 +83,10 @@ export default function Day({
 }
 
 Day.propTypes = {
+  // the month in which this day lies
   viewMonth: PropTypes.number,
   dayHeight: PropTypes.number,
+  // Date of this day
   date: PropTypes.object,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,

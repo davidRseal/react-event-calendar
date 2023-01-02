@@ -31,23 +31,6 @@ export default function Calendar({
     ...calendarStyle,
   };
 
-  //   let prevSelection = useRef(null);
-  //   useEffect(() => {
-  //     if (clickSelection) {
-  //       if (prevSelection.current === endSelected) {
-  //         prevSelection.current = null;
-  //         return;
-  //       }
-  //       if (prevSelection.current !== null) {
-  //         setEndSelected(startSelected);
-  //         setStartSelected(prevSelection.current);
-  //         prevSelection.current = endSelected;
-  //       } else {
-  //         prevSelection.current = startSelected;
-  //       }
-  //     }
-  //   }, [startSelected]);
-
   function getHeader() {
     let days = [];
     for (let i = 0; i < 7; i++) {
@@ -74,10 +57,16 @@ export default function Calendar({
   }
 
   return (
-    <div style={{ backgroundColor: defaultCalendarStyle.backgroundColor }}>
+    <div
+      style={{ backgroundColor: defaultCalendarStyle.backgroundColor }}
+      onMouseLeave={() => {
+        // purge the highlighting information if the cursor leaves the Calendar
+        setStartSelected(null);
+        setEndSelected(null);
+      }}
+    >
       <Header
         firstDay={firstDay}
-        month={firstDay.getMonth()}
         setFirstDay={setFirstDay}
         calendarStyle={defaultCalendarStyle}
       />
@@ -113,13 +102,19 @@ export default function Calendar({
 }
 
 Calendar.propTypes = {
+  // sets the default view of the calendar to whichever month contains the given date
   date: PropTypes.object,
+  // list of date ranges
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
+  // sets the total height of the grid cells
   dayHeight: PropTypes.number,
+  // callback function for whenever an event is clicked
   onEventClick: PropTypes.func,
+  // callback function for whenever a mouseUp event occurs
   onSelect: PropTypes.func,
+  // custom theming object
   calendarStyle: PropTypes.shape({
     backgroundColor: PropTypes.string,
     secondaryColor: PropTypes.string,

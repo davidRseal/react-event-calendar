@@ -130,6 +130,6 @@ Calendar.defaultProps = {
   date: new Date(),
   dayHeight: 100,
   events: [],
-  onEventClick: () => { },
-  onSelect: () => { },
+  onEventClick: () => {},
+  onSelect: () => {},
 };

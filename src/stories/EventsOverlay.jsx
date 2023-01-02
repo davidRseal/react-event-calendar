@@ -86,10 +86,12 @@ export default function EventsOverlay({
         if (getNumDaysBetween(currDay, currEvent.displayStart) > 0) {
           numDays = getNumDaysBetween(currDay, currEvent.displayStart);
           currLayout.push({ numDays: numDays });
-          numDays = 1 + getNumDaysBetween(currEvent.displayStart, currEvent.displayEnd);
+          numDays =
+            1 + getNumDaysBetween(currEvent.displayStart, currEvent.displayEnd);
           currLayout.push({ numDays: numDays, event: currEvent });
         } else {
-          numDays = 1 + getNumDaysBetween(currEvent.displayStart, currEvent.displayEnd);
+          numDays =
+            1 + getNumDaysBetween(currEvent.displayStart, currEvent.displayEnd);
           currLayout.push({ numDays: numDays, event: currEvent });
         }
         currDay.setTime(currEvent.displayEnd.getTime() + DAY);

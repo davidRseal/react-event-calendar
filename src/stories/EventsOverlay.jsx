@@ -196,7 +196,7 @@ export default function EventsOverlay({
     return (
       <div
         key={'week-' + weekCount++}
-        style={{ height: dayHeight, paddingTop: '2px' }}
+        style={{ height: dayHeight, marginTop: '2px' }}
       >
         <div style={{ height: '25px' }} />
         {layers}

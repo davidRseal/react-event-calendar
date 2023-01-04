@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Day from './Day';
-
-const DAY = 24 * 60 * 60 * 1000;
+import { getFirstDayOfFirstWeek, DAY, getNumWeeksInView } from './Calendar';
 
 export default function Month({
   firstDay,
+  startOfView,
   dayHeight,
   startSelected,
   setStartSelected,
@@ -22,13 +22,6 @@ export default function Month({
     }
   }, [startSelected, endSelected]);
 
-  function getSunday() {
-    let firstDayCopy = new Date(firstDay);
-    let day = firstDayCopy.getDay();
-    let diff = firstDayCopy.getDate() - day;
-    return new Date(firstDayCopy.setDate(diff));
-  }
-
   function getWeek(weekStart) {
     let days = [];
     for (let i = 0; i < 7; i++) {
@@ -39,7 +32,7 @@ export default function Month({
           style={{ width: 100 / 7 + '%', padding: '0px' }}
         >
           <Day
-            viewMonth={firstDay.getMonth()}
+            firstDay={firstDay}
             dayHeight={dayHeight}
             date={currDate}
             startSelected={startSelected}
@@ -57,14 +50,15 @@ export default function Month({
   }
 
   function getMonth() {
-    let weekStart = getSunday();
+    const firstDayOfFirstWeek = getFirstDayOfFirstWeek(firstDay);
+    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay)
     let weeks = [];
-    for (let i = 0; i < 6; i++) {
-      let currDate = new Date(weekStart.getTime() + i * 7 * DAY);
-      if (i > 4 && currDate.getMonth() !== firstDay.getMonth()) {
-        break;
-      }
-      weeks.push(<tr key={'month-row-' + i}>{getWeek(currDate)}</tr>);
+    let weekCounter = 0;
+    for (; weekCounter < numWeeksInView; weekCounter++) {
+      let currDate = new Date(startOfView.getTime() + weekCounter * 7 * DAY);
+      let weeksMonth = currDate.getUTCMonth();
+      let weeksYear = currDate.getUTCFullYear();
+      weeks.push(<tr key={'month-row-' + weekCounter} data-month={weeksMonth} data-year={weeksYear}>{getWeek(currDate)}</tr>);
     }
     return weeks;
   }
@@ -77,7 +71,7 @@ export default function Month({
         gridRow: 1,
       }}
     >
-      <tbody>{getMonth()}</tbody>
+      <tbody id="week-list">{getMonth()}</tbody>
     </table>
   );
 }
@@ -85,6 +79,8 @@ export default function Month({
 Month.propTypes = {
   // the first day of the month. Not necessarily the first day on the calendar because of week overlap
   firstDay: PropTypes.object,
+  // the first day of the fully rendered scrollable calendar window
+  startOfView: PropTypes.object,
   dayHeight: PropTypes.number,
   startSelected: PropTypes.object,
   setStartSelected: PropTypes.func,

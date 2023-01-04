@@ -147,7 +147,7 @@ stories.add('Custom Theming', () => {
       <Calendar
         calendarStyle={{
           backgroundColor: 'rgb(40, 40, 40)',
-          secondaryColor: 'white',
+          secondaryColor: 'grey',
           textColor: 'lightgrey',
           overlapColor: 'rgb(60, 60, 60)',
           hoverColor: 'rgb(0, 79, 250)',

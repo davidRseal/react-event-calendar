@@ -1,35 +1,19 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Event from './Event';
+import { getFirstDayOfFirstWeek, getNumWeeksInView } from './Calendar';
 
 const DAY = 24 * 60 * 60 * 1000;
 
 export default function EventsOverlay({
   firstDay,
+  startOfView,
   events,
   dayHeight,
   onEventClick,
   calendarStyle,
 }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
-
-  function getSunday() {
-    let firstDayCopy = new Date(firstDay);
-    let day = firstDayCopy.getDay();
-    let diff = firstDayCopy.getDate() - day;
-    return new Date(firstDayCopy.setDate(diff));
-  }
-
-  function getNumWeeksInView(weekStart) {
-    let i = 4;
-    for (; i < 6; i++) {
-      let currDate = new Date(weekStart.getTime() + i * 7 * DAY);
-      if (currDate.getMonth() !== firstDay.getMonth()) {
-        return i;
-      }
-    }
-    return i;
-  }
 
   function handleEventClick(event) {
     setSelectedEvent(event);
@@ -196,7 +180,7 @@ export default function EventsOverlay({
     return (
       <div
         key={'week-' + weekCount++}
-        style={{ height: dayHeight, paddingTop: '2px' }}
+        style={{ height: dayHeight, marginTop: '2px' }}
       >
         <div style={{ height: '25px' }} />
         {layers}
@@ -205,11 +189,11 @@ export default function EventsOverlay({
   }
 
   function getEventOverlay() {
-    let weekStart = getSunday(firstDay);
+    const firstDayOfFirstWeek = getFirstDayOfFirstWeek(firstDay);
+    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay)
     let weeks = [];
-    let numWeeksInView = getNumWeeksInView(weekStart);
     for (let i = 0; i < numWeeksInView; i++) {
-      let currWeekStart = new Date(weekStart.getTime() + i * 7 * DAY);
+      let currWeekStart = new Date(startOfView.getTime() + i * 7 * DAY);
       weeks.push(getWeek(currWeekStart));
     }
     return weeks;
@@ -230,6 +214,8 @@ export default function EventsOverlay({
 
 EventsOverlay.propTypes = {
   firstDay: PropTypes.object,
+  // the first day of the fully rendered scrollable calendar window
+  startOfView: PropTypes.object,
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),

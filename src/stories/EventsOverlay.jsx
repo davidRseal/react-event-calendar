@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Event from './Event';
-import { getFirstDayOfFirstWeek, getNumWeeksInView } from './Calendar';
-
-const DAY = 24 * 60 * 60 * 1000;
+import { DAY, getFirstDayOfWeek, getNumWeeksInView } from './Calendar';
 
 export default function EventsOverlay({
   firstDay,
@@ -189,7 +187,7 @@ export default function EventsOverlay({
   }
 
   function getEventOverlay() {
-    const firstDayOfFirstWeek = getFirstDayOfFirstWeek(firstDay);
+    const firstDayOfFirstWeek = getFirstDayOfWeek(firstDay);
     const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay)
     let weeks = [];
     for (let i = 0; i < numWeeksInView; i++) {

@@ -7,18 +7,17 @@ import EventsOverlay from './EventsOverlay';
 // TODO: code quality clean up; these exports shouldn't be visible to "user"
 export const DAY = 24 * 60 * 60 * 1000;
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WEEK_BUFFER = 20;
 
-export const WEEK_BUFFER = 20;
-
-export function getFirstDayOfFirstWeek(firstOfMonth) {
-  let firstDayCopy = new Date(firstOfMonth);
+export function getFirstDayOfWeek(date) {
+  let firstDayCopy = new Date(date);
   let day = firstDayCopy.getDay();
   let diff = firstDayCopy.getDate() - day;
   let firstDayOfFirstWeek = new Date(firstDayCopy.setDate(diff));
   return firstDayOfFirstWeek;
 }
 
-export function getFirstDayOfView(firstDayOfFirstWeek) {
+function getFirstDayOfView(firstDayOfFirstWeek) {
   return new Date(firstDayOfFirstWeek.getTime() - WEEK_BUFFER * 7 * DAY);
 }
 
@@ -41,10 +40,14 @@ export default function Calendar({
   onSelect,
   calendarStyle,
 }) {
+  const DEFAULT_NUM_ROWS_VISIBLE = 7;
+  const VERTICAL_TABLE_GAP = 2;
+  const calendarHeight = (dayHeight * DEFAULT_NUM_ROWS_VISIBLE) + (DEFAULT_NUM_ROWS_VISIBLE + 1) * VERTICAL_TABLE_GAP;
+
   const [firstDay, setFirstDay] = useState(
     new Date(date.getFullYear(), date.getMonth(), 1)
   );
-  const [startOfView, setStartOfView] = useState(getFirstDayOfView(getFirstDayOfFirstWeek(firstDay)));
+  const [startOfView, setStartOfView] = useState(getFirstDayOfView(getFirstDayOfWeek(firstDay)));
   const [startSelected, setStartSelected] = useState(null);
   const [endSelected, setEndSelected] = useState(null);
 
@@ -149,7 +152,7 @@ export default function Calendar({
 
     if (!resetInProgress.current && ((scrollWindowCenter > totalHeight - scrollWindowHeight) || scrollWindowCenter < scrollWindowHeight)) {
       resetInProgress.current = true;
-      setStartOfView(getFirstDayOfView(getFirstDayOfFirstWeek(newTargetDate)))
+      setStartOfView(getFirstDayOfView(getFirstDayOfWeek(newTargetDate)))
     }
   }
 
@@ -158,7 +161,7 @@ export default function Calendar({
   function resetCalendarView(sampleDate) {
     sampleDate.setDate(1);
     setFirstDay(sampleDate)
-    setStartOfView(getFirstDayOfView(getFirstDayOfFirstWeek(sampleDate)))
+    setStartOfView(getFirstDayOfView(getFirstDayOfWeek(sampleDate)))
   }
 
   // automatically scroll to the center on mount and whenever the view window changes
@@ -195,7 +198,7 @@ export default function Calendar({
       </div>
       <div
         id={'scroll-window'}
-        style={{ height: (dayHeight * 6) + 14 + 'px', overflowY: 'scroll', overflowX: 'hidden' }}
+        style={{ height: calendarHeight + 'px', overflowY: 'scroll', overflowX: 'hidden' }}
         onScroll={() => handleScroll()}
       >
         <div id={'calendar-view'} style={{ display: 'grid' }}>
@@ -211,14 +214,17 @@ export default function Calendar({
             onSelect={onSelect}
             calendarStyle={defaultCalendarStyle}
           />
-          <EventsOverlay
-            firstDay={firstDay}
-            startOfView={startOfView}
-            events={events}
-            dayHeight={dayHeight}
-            onEventClick={onEventClick}
-            calendarStyle={defaultCalendarStyle}
-          />
+          {/* prevents the events from very suddenly flashing by while the scroll position is reset */}
+          {!resetInProgress.current && (
+            <EventsOverlay
+              firstDay={firstDay}
+              startOfView={startOfView}
+              events={events}
+              dayHeight={dayHeight}
+              onEventClick={onEventClick}
+              calendarStyle={defaultCalendarStyle}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -232,7 +238,7 @@ Calendar.propTypes = {
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
-  // sets the total height of the grid cells
+  // sets the height of the grid cells
   dayHeight: PropTypes.number,
   // callback function for whenever an event is clicked
   onEventClick: PropTypes.func,

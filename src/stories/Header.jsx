@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
-import { getFirstDayOfFirstWeek, getFirstDayOfView } from './Calendar';
 
 const MONTHS = [
   'January',

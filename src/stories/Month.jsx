@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Day from './Day';
-import { getFirstDayOfFirstWeek, DAY, getNumWeeksInView } from './Calendar';
+import { getFirstDayOfWeek, DAY, getNumWeeksInView } from './Calendar';
 
 export default function Month({
   firstDay,
@@ -50,7 +50,7 @@ export default function Month({
   }
 
   function getMonth() {
-    const firstDayOfFirstWeek = getFirstDayOfFirstWeek(firstDay);
+    const firstDayOfFirstWeek = getFirstDayOfWeek(firstDay);
     const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay)
     let weeks = [];
     let weekCounter = 0;

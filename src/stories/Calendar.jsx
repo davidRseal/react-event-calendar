@@ -24,7 +24,9 @@ function getFirstDayOfView(firstDayOfFirstWeek) {
 export function getNumWeeksInView(firstDayOfFirstWeek, firstOfMonth) {
   let numWeeksInTargetMonth = 4;
   for (; numWeeksInTargetMonth < 6; numWeeksInTargetMonth++) {
-    let currDate = new Date(firstDayOfFirstWeek.getTime() + numWeeksInTargetMonth * 7 * DAY);
+    let currDate = new Date(
+      firstDayOfFirstWeek.getTime() + numWeeksInTargetMonth * 7 * DAY
+    );
     if (currDate.getMonth() !== firstOfMonth.getMonth()) {
       break;
     }
@@ -42,12 +44,16 @@ export default function Calendar({
 }) {
   const DEFAULT_NUM_ROWS_VISIBLE = 7;
   const VERTICAL_TABLE_GAP = 2;
-  const calendarHeight = (dayHeight * DEFAULT_NUM_ROWS_VISIBLE) + (DEFAULT_NUM_ROWS_VISIBLE + 1) * VERTICAL_TABLE_GAP;
+  const calendarHeight =
+    dayHeight * DEFAULT_NUM_ROWS_VISIBLE +
+    (DEFAULT_NUM_ROWS_VISIBLE + 1) * VERTICAL_TABLE_GAP;
 
   const [firstDay, setFirstDay] = useState(
     new Date(date.getFullYear(), date.getMonth(), 1)
   );
-  const [startOfView, setStartOfView] = useState(getFirstDayOfView(getFirstDayOfWeek(firstDay)));
+  const [startOfView, setStartOfView] = useState(
+    getFirstDayOfView(getFirstDayOfWeek(firstDay))
+  );
   const [startSelected, setStartSelected] = useState(null);
   const [endSelected, setEndSelected] = useState(null);
 
@@ -97,12 +103,17 @@ export default function Calendar({
 
     Array.from(weekList).forEach((element) => {
       const position = element.getBoundingClientRect();
-      if (!(scrollWindowPosition.bottom < position.bottom || scrollWindowPosition.top > position.top)) {
+      if (
+        !(
+          scrollWindowPosition.bottom < position.bottom ||
+          scrollWindowPosition.top > position.top
+        )
+      ) {
         const elementMonth = element.getAttribute('data-month');
         const elementYear = element.getAttribute('data-year');
-        visibleWeeks.push({ elementMonth, elementYear })
+        visibleWeeks.push({ elementMonth, elementYear });
       }
-    })
+    });
 
     // count the number of visible weeks for each month
     // associate each month with it's year. Assume that the same month from different years won't appear twice
@@ -126,7 +137,10 @@ export default function Calendar({
         pluralityMonth = month;
         currentMax = count;
       } else if (count === currentMax) {
-        if (month < pluralityMonth && monthsYearMap.get(month) <= monthsYearMap.get(pluralityMonth)) {
+        if (
+          month < pluralityMonth &&
+          monthsYearMap.get(month) <= monthsYearMap.get(pluralityMonth)
+        ) {
           pluralityMonth = month;
           currentMax = count;
         }
@@ -145,14 +159,18 @@ export default function Calendar({
     const scrollWindowTopPosition = scrollWindow.scrollTop;
     const scrollWindowHeight = scrollWindow.offsetHeight;
     const totalHeight = calendarView.offsetHeight;
-    const scrollWindowCenter = scrollWindowTopPosition + (scrollWindowHeight / 2);
+    const scrollWindowCenter = scrollWindowTopPosition + scrollWindowHeight / 2;
 
     const newTargetDate = getDateFromMostCurrentlyVisibleMonth();
     setFirstDay(newTargetDate);
 
-    if (!resetInProgress.current && ((scrollWindowCenter > totalHeight - scrollWindowHeight) || scrollWindowCenter < scrollWindowHeight)) {
+    if (
+      !resetInProgress.current &&
+      (scrollWindowCenter > totalHeight - scrollWindowHeight ||
+        scrollWindowCenter < scrollWindowHeight)
+    ) {
       resetInProgress.current = true;
-      setStartOfView(getFirstDayOfView(getFirstDayOfWeek(newTargetDate)))
+      setStartOfView(getFirstDayOfView(getFirstDayOfWeek(newTargetDate)));
     }
   }
 
@@ -160,8 +178,8 @@ export default function Calendar({
   // and scroll to the middle
   function resetCalendarView(sampleDate) {
     sampleDate.setDate(1);
-    setFirstDay(sampleDate)
-    setStartOfView(getFirstDayOfView(getFirstDayOfWeek(sampleDate)))
+    setFirstDay(sampleDate);
+    setStartOfView(getFirstDayOfView(getFirstDayOfWeek(sampleDate)));
   }
 
   // automatically scroll to the center on mount and whenever the view window changes
@@ -170,7 +188,7 @@ export default function Calendar({
     const calendarView = document.getElementById('calendar-view');
     const scrollWindowHeight = scrollWindow.offsetHeight;
     const totalHeight = calendarView.offsetHeight;
-    const topOfMiddle = (totalHeight / 2) - (scrollWindowHeight / 2);
+    const topOfMiddle = totalHeight / 2 - scrollWindowHeight / 2;
     scrollWindow.scrollTo(0, topOfMiddle);
     resetInProgress.current = false;
   }, [startOfView]);
@@ -198,7 +216,11 @@ export default function Calendar({
       </div>
       <div
         id={'scroll-window'}
-        style={{ height: calendarHeight + 'px', overflowY: 'scroll', overflowX: 'hidden' }}
+        style={{
+          height: calendarHeight + 'px',
+          overflowY: 'scroll',
+          overflowX: 'hidden',
+        }}
         onScroll={() => handleScroll()}
       >
         <div id={'calendar-view'} style={{ display: 'grid' }}>
@@ -260,6 +282,6 @@ Calendar.defaultProps = {
   date: new Date(),
   dayHeight: 100,
   events: [],
-  onEventClick: () => { },
-  onSelect: () => { },
+  onEventClick: () => {},
+  onSelect: () => {},
 };

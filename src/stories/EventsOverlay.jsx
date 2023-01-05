@@ -188,7 +188,7 @@ export default function EventsOverlay({
 
   function getEventOverlay() {
     const firstDayOfFirstWeek = getFirstDayOfWeek(firstDay);
-    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay)
+    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay);
     let weeks = [];
     for (let i = 0; i < numWeeksInView; i++) {
       let currWeekStart = new Date(startOfView.getTime() + i * 7 * DAY);

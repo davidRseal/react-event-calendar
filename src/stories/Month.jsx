@@ -51,14 +51,22 @@ export default function Month({
 
   function getMonth() {
     const firstDayOfFirstWeek = getFirstDayOfWeek(firstDay);
-    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay)
+    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay);
     let weeks = [];
     let weekCounter = 0;
     for (; weekCounter < numWeeksInView; weekCounter++) {
       let currDate = new Date(startOfView.getTime() + weekCounter * 7 * DAY);
       let weeksMonth = currDate.getUTCMonth();
       let weeksYear = currDate.getUTCFullYear();
-      weeks.push(<tr key={'month-row-' + weekCounter} data-month={weeksMonth} data-year={weeksYear}>{getWeek(currDate)}</tr>);
+      weeks.push(
+        <tr
+          key={'month-row-' + weekCounter}
+          data-month={weeksMonth}
+          data-year={weeksYear}
+        >
+          {getWeek(currDate)}
+        </tr>
+      );
     }
     return weeks;
   }

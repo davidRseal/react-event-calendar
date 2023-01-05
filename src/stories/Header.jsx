@@ -40,8 +40,12 @@ export default function Header({ firstDay, resetCalendarView, calendarStyle }) {
       <BsChevronLeft
         style={buttonStyle}
         onClick={() => {
-          const newTargetDate = new Date(firstDay.getFullYear(), firstDay.getMonth() - 1, 1);
-          resetCalendarView(newTargetDate)
+          const newTargetDate = new Date(
+            firstDay.getFullYear(),
+            firstDay.getMonth() - 1,
+            1
+          );
+          resetCalendarView(newTargetDate);
         }}
       />
       <div
@@ -59,8 +63,12 @@ export default function Header({ firstDay, resetCalendarView, calendarStyle }) {
       <BsChevronRight
         style={buttonStyle}
         onClick={() => {
-          const newTargetDate = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1);
-          resetCalendarView(newTargetDate)
+          const newTargetDate = new Date(
+            firstDay.getFullYear(),
+            firstDay.getMonth() + 1,
+            1
+          );
+          resetCalendarView(newTargetDate);
         }}
       />
     </div>

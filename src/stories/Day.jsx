@@ -14,13 +14,14 @@ export default function Day({
   calendarStyle,
 }) {
   const [hover, setHover] = useState(false);
-  const isInTargetMonth = firstDay.getMonth() === date.getMonth() && firstDay.getYear() === date.getYear()
+  const isInTargetMonth =
+    firstDay.getMonth() === date.getMonth() &&
+    firstDay.getYear() === date.getYear();
   const style = {
     normal: {
-      backgroundColor:
-        isInTargetMonth
-          ? calendarStyle.backgroundColor
-          : calendarStyle.overlapColor,
+      backgroundColor: isInTargetMonth
+        ? calendarStyle.backgroundColor
+        : calendarStyle.overlapColor,
       height: dayHeight,
       userSelect: 'none',
     },

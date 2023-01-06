@@ -17,7 +17,7 @@ const MONTHS = [
   'December',
 ];
 
-export default function Header({ firstDay, setFirstDay, calendarStyle }) {
+export default function Header({ firstDay, resetCalendarView, calendarStyle }) {
   const buttonStyle = {
     cursor: 'pointer',
     minWidth: '50px',
@@ -34,21 +34,24 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
         display: 'flex',
         justifyContent: 'center',
         margin: 'auto',
-        maxWidth: '318px',
+        maxWidth: '418px',
       }}
     >
       <BsChevronLeft
         style={buttonStyle}
-        onClick={() =>
-          setFirstDay(
-            new Date(firstDay.getFullYear(), firstDay.getMonth() - 1, 1)
-          )
-        }
+        onClick={() => {
+          const newTargetDate = new Date(
+            firstDay.getFullYear(),
+            firstDay.getMonth() - 1,
+            1
+          );
+          resetCalendarView(newTargetDate);
+        }}
       />
       <div
         id="title"
         style={{
-          width: '218px',
+          width: '318px',
           fontSize: '30px',
           textAlign: 'center',
           color: calendarStyle.textColor,
@@ -59,11 +62,14 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
       </div>
       <BsChevronRight
         style={buttonStyle}
-        onClick={() =>
-          setFirstDay(
-            new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1)
-          )
-        }
+        onClick={() => {
+          const newTargetDate = new Date(
+            firstDay.getFullYear(),
+            firstDay.getMonth() + 1,
+            1
+          );
+          resetCalendarView(newTargetDate);
+        }}
       />
     </div>
   );
@@ -71,7 +77,7 @@ export default function Header({ firstDay, setFirstDay, calendarStyle }) {
 
 Header.propTypes = {
   firstDay: PropTypes.object,
-  setFirstDay: PropTypes.func,
+  resetCalendarView: PropTypes.func,
   calendarStyle: PropTypes.shape({
     textColor: PropTypes.string,
   }),

@@ -1,35 +1,18 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Event from './Event';
-
-const DAY = 24 * 60 * 60 * 1000;
+import { DAY, getFirstDayOfWeek, getNumWeeksInView } from './Calendar';
 
 export default function EventsOverlay({
   firstDay,
+  startOfView,
   events,
   dayHeight,
   onEventClick,
+  scrollMode,
   calendarStyle,
 }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
-
-  function getSunday() {
-    let firstDayCopy = new Date(firstDay);
-    let day = firstDayCopy.getDay();
-    let diff = firstDayCopy.getDate() - day;
-    return new Date(firstDayCopy.setDate(diff));
-  }
-
-  function getNumWeeksInView(weekStart) {
-    let i = 4;
-    for (; i < 6; i++) {
-      let currDate = new Date(weekStart.getTime() + i * 7 * DAY);
-      if (currDate.getMonth() !== firstDay.getMonth()) {
-        return i;
-      }
-    }
-    return i;
-  }
 
   function handleEventClick(event) {
     setSelectedEvent(event);
@@ -205,11 +188,15 @@ export default function EventsOverlay({
   }
 
   function getEventOverlay() {
-    let weekStart = getSunday(firstDay);
+    const firstDayOfFirstWeek = getFirstDayOfWeek(firstDay);
+    const numWeeksInView = getNumWeeksInView(
+      firstDayOfFirstWeek,
+      firstDay,
+      scrollMode
+    );
     let weeks = [];
-    let numWeeksInView = getNumWeeksInView(weekStart);
     for (let i = 0; i < numWeeksInView; i++) {
-      let currWeekStart = new Date(weekStart.getTime() + i * 7 * DAY);
+      let currWeekStart = new Date(startOfView.getTime() + i * 7 * DAY);
       weeks.push(getWeek(currWeekStart));
     }
     return weeks;
@@ -230,11 +217,14 @@ export default function EventsOverlay({
 
 EventsOverlay.propTypes = {
   firstDay: PropTypes.object,
+  // the first day of the fully rendered scrollable calendar window
+  startOfView: PropTypes.object,
   events: PropTypes.arrayOf(
     PropTypes.shape({ start: PropTypes.object, end: PropTypes.object })
   ),
   dayHeight: PropTypes.number,
   onEventClick: PropTypes.func,
+  scrollMode: PropTypes.bool,
   calendarStyle: PropTypes.shape({
     eventColor: PropTypes.string,
     hoverColor: PropTypes.string,

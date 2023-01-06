@@ -12,6 +12,7 @@ export default function Month({
   endSelected,
   setEndSelected,
   onSelect,
+  scrollMode,
   calendarStyle,
 }) {
   const [highlighting, setHighlighting] = useState(false);
@@ -51,7 +52,11 @@ export default function Month({
 
   function getMonth() {
     const firstDayOfFirstWeek = getFirstDayOfWeek(firstDay);
-    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay);
+    const numWeeksInView = getNumWeeksInView(
+      firstDayOfFirstWeek,
+      firstDay,
+      scrollMode
+    );
     let weeks = [];
     let weekCounter = 0;
     for (; weekCounter < numWeeksInView; weekCounter++) {
@@ -95,6 +100,7 @@ Month.propTypes = {
   endSelected: PropTypes.object,
   setEndSelected: PropTypes.func,
   onSelect: PropTypes.func,
+  scrollMode: PropTypes.bool,
   calendarStyle: PropTypes.shape({
     backgroundColor: PropTypes.string,
     secondaryColor: PropTypes.string,

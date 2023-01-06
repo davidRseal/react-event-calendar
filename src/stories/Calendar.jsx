@@ -17,11 +17,19 @@ export function getFirstDayOfWeek(date) {
   return firstDayOfFirstWeek;
 }
 
-function getFirstDayOfView(firstDayOfFirstWeek) {
-  return new Date(firstDayOfFirstWeek.getTime() - WEEK_BUFFER * 7 * DAY);
+function getFirstDayOfView(firstDayOfFirstWeek, scrollMode) {
+  if (scrollMode) {
+    return new Date(firstDayOfFirstWeek.getTime() - WEEK_BUFFER * 7 * DAY);
+  }
+  // if scrolling is disabled the first day of the view is the first day of the first week of the month
+  return firstDayOfFirstWeek;
 }
 
-export function getNumWeeksInView(firstDayOfFirstWeek, firstOfMonth) {
+export function getNumWeeksInView(
+  firstDayOfFirstWeek,
+  firstOfMonth,
+  scrollMode
+) {
   let numWeeksInTargetMonth = 4;
   for (; numWeeksInTargetMonth < 6; numWeeksInTargetMonth++) {
     let currDate = new Date(
@@ -31,7 +39,10 @@ export function getNumWeeksInView(firstDayOfFirstWeek, firstOfMonth) {
       break;
     }
   }
-  return numWeeksInTargetMonth + 2 * WEEK_BUFFER;
+  if (scrollMode) {
+    return numWeeksInTargetMonth + 2 * WEEK_BUFFER;
+  }
+  return numWeeksInTargetMonth;
 }
 
 export default function Calendar({
@@ -40,6 +51,7 @@ export default function Calendar({
   events,
   onEventClick,
   onSelect,
+  scrollMode,
   calendarStyle,
 }) {
   const DEFAULT_NUM_ROWS_VISIBLE = 7;
@@ -52,7 +64,7 @@ export default function Calendar({
     new Date(date.getFullYear(), date.getMonth(), 1)
   );
   const [startOfView, setStartOfView] = useState(
-    getFirstDayOfView(getFirstDayOfWeek(firstDay))
+    getFirstDayOfView(getFirstDayOfWeek(firstDay), scrollMode)
   );
   const [startSelected, setStartSelected] = useState(null);
   const [endSelected, setEndSelected] = useState(null);
@@ -154,6 +166,7 @@ export default function Calendar({
   // prevents further scroll events until the component re-renders and the useEffect has reset the scroll position to center
   const resetInProgress = useRef(false);
   function handleScroll() {
+    // TODO: if the user clicks and drags the scroll bar to the fringe it will jump to ludicrous speed
     const scrollWindow = document.getElementById('scroll-window');
     const calendarView = document.getElementById('calendar-view');
     const scrollWindowTopPosition = scrollWindow.scrollTop;
@@ -170,7 +183,9 @@ export default function Calendar({
         scrollWindowCenter < scrollWindowHeight)
     ) {
       resetInProgress.current = true;
-      setStartOfView(getFirstDayOfView(getFirstDayOfWeek(newTargetDate)));
+      setStartOfView(
+        getFirstDayOfView(getFirstDayOfWeek(newTargetDate), scrollMode)
+      );
     }
   }
 
@@ -179,11 +194,14 @@ export default function Calendar({
   function resetCalendarView(sampleDate) {
     sampleDate.setDate(1);
     setFirstDay(sampleDate);
-    setStartOfView(getFirstDayOfView(getFirstDayOfWeek(sampleDate)));
+    setStartOfView(
+      getFirstDayOfView(getFirstDayOfWeek(sampleDate), scrollMode)
+    );
   }
 
   // automatically scroll to the center on mount and whenever the view window changes
   useEffect(() => {
+    // TODO: can't put more than 1 Calendar on screen at a time since getElementById just gives the first one
     const scrollWindow = document.getElementById('scroll-window');
     const calendarView = document.getElementById('calendar-view');
     const scrollWindowHeight = scrollWindow.offsetHeight;
@@ -217,11 +235,11 @@ export default function Calendar({
       <div
         id={'scroll-window'}
         style={{
-          height: calendarHeight + 'px',
+          height: scrollMode ? calendarHeight + 'px' : undefined,
           overflowY: 'scroll',
           overflowX: 'hidden',
         }}
-        onScroll={() => handleScroll()}
+        onScroll={scrollMode ? () => handleScroll() : undefined}
       >
         <div id={'calendar-view'} style={{ display: 'grid' }}>
           <Month
@@ -234,6 +252,7 @@ export default function Calendar({
             clickSelection={false}
             dayHeight={dayHeight}
             onSelect={onSelect}
+            scrollMode={scrollMode}
             calendarStyle={defaultCalendarStyle}
           />
           {/* prevents the events from very suddenly flashing by while the scroll position is reset */}
@@ -244,6 +263,7 @@ export default function Calendar({
               events={events}
               dayHeight={dayHeight}
               onEventClick={onEventClick}
+              scrollMode={scrollMode}
               calendarStyle={defaultCalendarStyle}
             />
           )}
@@ -266,6 +286,8 @@ Calendar.propTypes = {
   onEventClick: PropTypes.func,
   // callback function for whenever a mouseUp event occurs
   onSelect: PropTypes.func,
+  // enables an infinity scroll
+  scrollMode: PropTypes.bool,
   // custom theming object
   calendarStyle: PropTypes.shape({
     backgroundColor: PropTypes.string,
@@ -284,4 +306,5 @@ Calendar.defaultProps = {
   events: [],
   onEventClick: () => {},
   onSelect: () => {},
+  scrollMode: false,
 };

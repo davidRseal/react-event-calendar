@@ -9,6 +9,7 @@ export default function EventsOverlay({
   events,
   dayHeight,
   onEventClick,
+  scrollMode,
   calendarStyle,
 }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -188,7 +189,11 @@ export default function EventsOverlay({
 
   function getEventOverlay() {
     const firstDayOfFirstWeek = getFirstDayOfWeek(firstDay);
-    const numWeeksInView = getNumWeeksInView(firstDayOfFirstWeek, firstDay);
+    const numWeeksInView = getNumWeeksInView(
+      firstDayOfFirstWeek,
+      firstDay,
+      scrollMode
+    );
     let weeks = [];
     for (let i = 0; i < numWeeksInView; i++) {
       let currWeekStart = new Date(startOfView.getTime() + i * 7 * DAY);
@@ -219,6 +224,7 @@ EventsOverlay.propTypes = {
   ),
   dayHeight: PropTypes.number,
   onEventClick: PropTypes.func,
+  scrollMode: PropTypes.bool,
   calendarStyle: PropTypes.shape({
     eventColor: PropTypes.string,
     hoverColor: PropTypes.string,

@@ -1,4 +1,5 @@
-# REACT-EVENT-CALENDAR Storybook app 
+# REACT-EVENT-CALENDAR Storybook app
+
 # (live demo: https://davidrseal.github.io/react-event-calendar)
 
 This project was generated using the Storybook guide here <https://storybook.js.org/tutorials/intro-to-storybook/react/en/get-started/>
@@ -44,6 +45,5 @@ A quick look at the top-level files and directories included with this template.
 1. **`.storybook`**: This directory contains Storybook's [configuration](https://storybook.js.org/docs/react/configure/overview) files.
 
 2. **`src`**: This directory will contain all of the code related to what you will see in the application.
-
 
 PS fix Prettier code-style errors with `npx prettier -w .`

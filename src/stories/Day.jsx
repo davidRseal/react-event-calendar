@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 export default function Day({
-  viewMonth,
+  firstDay,
   dayHeight,
   date,
   startSelected,
@@ -14,13 +14,14 @@ export default function Day({
   calendarStyle,
 }) {
   const [hover, setHover] = useState(false);
-  const thisMonth = date.getMonth();
+  const isInTargetMonth =
+    firstDay.getMonth() === date.getMonth() &&
+    firstDay.getYear() === date.getYear();
   const style = {
     normal: {
-      backgroundColor:
-        viewMonth === thisMonth
-          ? calendarStyle.backgroundColor
-          : calendarStyle.overlapColor,
+      backgroundColor: isInTargetMonth
+        ? calendarStyle.backgroundColor
+        : calendarStyle.overlapColor,
       height: dayHeight,
       userSelect: 'none',
     },
@@ -83,8 +84,7 @@ export default function Day({
 }
 
 Day.propTypes = {
-  // the month in which this day lies
-  viewMonth: PropTypes.number,
+  firstDay: PropTypes.object,
   dayHeight: PropTypes.number,
   // Date of this day
   date: PropTypes.object,

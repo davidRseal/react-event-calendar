@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react';
 import Calendar from './Calendar';
 import { TiDelete } from 'react-icons/ti';
-import PropTypes from 'prop-types';
 import { storiesOf } from '@storybook/react';
 
 const stories = storiesOf('Calendar');
 
-function InteractiveCalendar({ scrollMode }) {
+function InteractiveCalendar(scrollMode) {
   // this is all "user" code
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -100,10 +99,6 @@ function InteractiveCalendar({ scrollMode }) {
   );
 }
 
-InteractiveCalendar.PropTypes = {
-  scrollMode: PropTypes.bool,
-};
-
 stories.add('Preset Events', () => {
   const EVENTS = [
     {
@@ -146,7 +141,7 @@ stories.add('Preset Events', () => {
 
 stories.add('Interactive', () =>
   // InteractiveCalendar is stateful sample-implementation that allows for clickable event creation and deletion
-  React.createElement(() => <InteractiveCalendar />)
+  React.createElement(() => InteractiveCalendar())
 );
 
 stories.add('Custom Theming', () => {
@@ -168,5 +163,5 @@ stories.add('Custom Theming', () => {
 
 stories.add('Infinity Scroll (experimental)', () =>
   // InteractiveCalendar is stateful sample-implementation that allows for clickable event creation and deletion
-  React.createElement(() => <InteractiveCalendar scrollMode />)
+  React.createElement(() => InteractiveCalendar(true))
 );

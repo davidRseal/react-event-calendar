@@ -100,6 +100,10 @@ function InteractiveCalendar({ scrollMode }) {
   );
 }
 
+InteractiveCalendar.PropTypes = {
+  scrollMode: PropTypes.bool,
+};
+
 stories.add('Preset Events', () => {
   const EVENTS = [
     {

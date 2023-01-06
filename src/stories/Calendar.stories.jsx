@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Calendar from './Calendar';
 import { TiDelete } from 'react-icons/ti';
-
+import PropTypes from 'prop-types';
 import { storiesOf } from '@storybook/react';
 
 const stories = storiesOf('Calendar');

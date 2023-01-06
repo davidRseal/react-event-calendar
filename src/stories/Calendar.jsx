@@ -236,7 +236,7 @@ export default function Calendar({
         id={'scroll-window'}
         style={{
           height: scrollMode ? calendarHeight + 'px' : undefined,
-          overflowY: 'scroll',
+          overflowY: scrollMode ? 'scroll' : undefined,
           overflowX: 'hidden',
         }}
         onScroll={scrollMode ? () => handleScroll() : undefined}
